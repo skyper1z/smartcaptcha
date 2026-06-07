@@ -220,9 +220,9 @@ const packages = {
         "15 professionally edited photos.",
         "Beauty retouching.",
         "Social media-ready images.",
-        "One 12” × 18” print."
+        "One 12” × 16” frame."
       ],
-      tags: ["15 photos", "Beauty retouch", "12×18 print"]
+      tags: ["15 photos", "Beauty retouch", "12×16 frame"]
     },
     {
       title: "Royal Gold",
@@ -238,15 +238,15 @@ const packages = {
         "Up to 3 outfit changes.",
         "25 professionally edited photos.",
         "Cinematic behind-the-scenes reel.",
-        "One framed portrait.",
-        "Social media content package."
+        "One framed portrait (16 x 20).",
+        "Premium makeup service"
       ],
-      tags: ["25 photos", "3 outfits", "Framed portrait"]
+      tags: ["25 photos", "3 outfits", "Framed portrait (16 × 20)"]
     },
     {
       title: "Heritage Luxury Package",
       category: "Kente shoot",
-      price: "GHS 3,500–GHS 5,000+",
+      price: "GHS 3,000",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -255,8 +255,8 @@ const packages = {
         "Professional makeup coordination.",
         "Cinematic reel.",
         "30 edited images.",
-        "Framed portrait.",
-        "Premium photobook option."
+        "Framed portrait (24 x 28).",
+        "Premium photobook."
       ],
       tags: ["Heritage luxury", "30 images", "Photobook option"]
     },
@@ -579,7 +579,7 @@ function setPortraitFilter(filterKey) {
 function updateBirthdayFilterVisibility() {
   const birthdayLocationRow = document.getElementById("birthday-location-filters");
   if (!birthdayLocationRow) return;
-  
+
   const isBirthdaySelected = activePortraitFilter === "birthday";
   if (isBirthdaySelected) {
     birthdayLocationRow.classList.remove("hidden");
@@ -593,7 +593,7 @@ function updateBirthdayFilterVisibility() {
 function renderBirthdayLocationFilters() {
   const birthdayLocationRow = document.getElementById("birthday-location-filters");
   if (!birthdayLocationRow) return;
-  
+
   const birthdayLocations = [
     { key: "In-studio", label: "In-studio" },
     { key: "Location", label: "Out-studio" }
@@ -633,12 +633,12 @@ function renderPackages(category) {
   if (category === "portrait") {
     const filterInfo = portraitFilters.find((filter) => filter.key === activePortraitFilter);
     let filteredItems = packages.portrait.filter((item) => item.category === filterInfo.category);
-    
+
     // Additional filtering for birthday location
     if (activePortraitFilter === "birthday") {
       filteredItems = filteredItems.filter((item) => item.location === activeBirthdayLocation);
     }
-    
+
     packageGrid.classList.add("portrait-carousel");
     packageGrid.innerHTML = filteredItems.length
       ? filteredItems.map(renderPackageCard).join("")
@@ -768,14 +768,14 @@ function generateGalleryItemHTML(item) {
 
 function initGallery(filterCategory) {
   if (typeof galleryData === "undefined" || !galleryGrid) return;
-  
+
   // Reset
   galleryGrid.innerHTML = "";
-  
-  currentGalleryItems = filterCategory === "all" 
-    ? galleryData 
+
+  currentGalleryItems = filterCategory === "all"
+    ? galleryData
     : galleryData.filter(item => item.category === filterCategory);
-    
+
   // Split into two rows
   const mid = Math.ceil(currentGalleryItems.length / 2);
   const row1Items = currentGalleryItems.slice(0, mid);
