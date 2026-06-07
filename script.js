@@ -382,7 +382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    const { data: dbGallery, error: galError } = await window.supabaseClient.from('gallery_images').select('*');
+    const { data: dbGallery, error: galError } = await window.supabaseClient.from('gallery_images').select('*').order('created_at', { ascending: false });
     if (dbGallery && dbGallery.length > 0) {
       galleryData = dbGallery;
       initGallery("all");
