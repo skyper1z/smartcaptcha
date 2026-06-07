@@ -263,7 +263,7 @@ const packages = {
     {
       title: "Mini Birthday Package",
       category: "Birthday shoot",
-      price: "GHS 600",
+      price: "GHS 300",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -278,7 +278,7 @@ const packages = {
     {
       title: "Classic Birthday Package",
       category: "Birthday shoot",
-      price: "GHS 1,000",
+      price: "GHS 700",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
@@ -294,7 +294,7 @@ const packages = {
     {
       title: "Premium Birthday Package",
       category: "Birthday shoot",
-      price: "GHS 1,500",
+      price: "GHS 1,200",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -311,7 +311,7 @@ const packages = {
     {
       title: "Luxury Birthday Package",
       category: "Birthday shoot",
-      price: "GHS 2,500+",
+      price: "GHS 2,200+",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
