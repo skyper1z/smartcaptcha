@@ -504,6 +504,7 @@ const defaultPackages = {
   ]
 };
 
+window.defaultPackages = defaultPackages;
 let packages = defaultPackages;
 
 // Gallery Data fallback

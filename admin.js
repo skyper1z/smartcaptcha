@@ -172,9 +172,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     seedBtn.disabled = true;
 
     try {
-      // 1. Migrate Packages (from defaultPackages in script.js)
+      // 1. Migrate Packages (from window.defaultPackages in script.js)
       let packagesToInsert = [];
-      for (const [mainCat, items] of Object.entries(defaultPackages)) {
+      for (const [mainCat, items] of Object.entries(window.defaultPackages)) {
         items.forEach(p => {
           packagesToInsert.push({
             category: p.category,
