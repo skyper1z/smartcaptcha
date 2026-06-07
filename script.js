@@ -99,12 +99,75 @@ const packages = {
   ],
   portrait: [
     {
+      title: "Basic Bump Shoot",
+      category: "Bump shoot",
+      price: "GHS 500",
+      tone: "portrait",
+      photo: "assets/photos/studio-portrait.jpg",
+      featured: true,
+      bullets: [
+        "45 minutes to 1 hour studio session.",
+        "1 outfit.",
+        "5 professionally edited images.",
+        "Online delivery.",
+        "One backdrop setup."
+      ],
+      tags: ["1 outfit", "5 edited images", "Online delivery"]
+    },
+    {
+      title: "Standard Bump Shoot",
+      category: "Bump shoot",
+      price: "GHS 800",
+      tone: "portrait",
+      photo: "assets/photos/traditional-props.jpg",
+      bullets: [
+        "Up to 2 hours studio session.",
+        "2–3 outfit changes.",
+        "10–15 professionally edited images.",
+        "Multiple backdrop setups.",
+        "Online gallery delivery."
+      ],
+      tags: ["2–3 outfits", "10–15 photos", "Gallery delivery"]
+    },
+    {
+      title: "Premium Bump Shoot",
+      category: "Bump shoot",
+      price: "GHS 1,500",
+      tone: "portrait",
+      photo: "assets/photos/studio-portrait.jpg",
+      bullets: [
+        "Up to 3 hours studio session.",
+        "Unlimited outfit changes.",
+        "Professional makeup artist.",
+        "20+ edited images.",
+        "Couple/family participation.",
+        "Premium retouching.",
+        "Photo book or framed print.",
+        "Behind-the-scenes video clips for social media."
+      ],
+      tags: ["Unlimited outfits", "20+ images", "Makeup artist"]
+    },
+    {
+      title: "Bump Shoot Express",
+      category: "Bump shoot",
+      price: "GHS 800+",
+      tone: "portrait",
+      photo: "assets/photos/studio-portrait.jpg",
+      bullets: [
+        "Mini Package: GHS 800.",
+        "Classic Package: GHS 1,200.",
+        "Luxury Package: GHS 2,000+.",
+        "Fast booking and studio-ready support.",
+        "Ideal for quick maternity sessions and social media-ready images."
+      ],
+      tags: ["Express plans", "Fast turnaround", "Social-ready"]
+    },
+    {
       title: "Studio Mini",
       category: "Photoshoot",
       price: "GHS 200",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
-      featured: true,
       bullets: ["5 retouched pictures.", "2 dresses.", "30 minutes session time."],
       tags: ["5 photos", "2 dresses", "30 mins"]
     },
@@ -207,6 +270,11 @@ const extras = [
   ["Thanksgiving / lunch, 5 hours", "GHS 5,000"],
   ["Same-day edit, 10 to 15 images", "GHS 2,000"],
   ["Express service within 5 working days", "GHS 4,000"],
+  ["Professional makeup", "GHS 200–GHS 500"],
+  ["Extra edited photo", "GHS 20–GHS 50"],
+  ["Short reel / video", "GHS 200–GHS 600"],
+  ["Printed photobook", "GHS 300–GHS 1,000"],
+  ["Large framed portrait", "GHS 200–GHS 800"],
   ["Adult kente traditional props", "GHS 700"],
   ["Adult props with makeup and 4 retouched pictures", "GHS 1,000"],
   ["Child kente traditional props", "GHS 400"],
