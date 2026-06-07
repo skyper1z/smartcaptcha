@@ -442,6 +442,24 @@ h3 {
   display: none;
 }
 
+.birthday-location-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.birthday-location-filters {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.birthday-location-filters.hidden {
+  display: none;
+}
+
 .portrait-filter-button {
   display: inline-flex;
   flex-direction: column;
@@ -1121,6 +1139,8 @@ h3 {
   .service-grid,
   .package-grid,
   .package-group,
+  .portrait-filters,
+  .birthday-location-filters,
   .recommendation-grid,
   .extras-list {
     grid-template-columns: repeat(2, minmax(0, 1fr));
