@@ -563,8 +563,8 @@ function setPortraitFilter(filterKey) {
 
 function renderBirthdayLocationFilters() {
   birthdayLocationRow.innerHTML = birthdayLocations.map((location) => `
-    <button type="button" class="portrait-filter-button${location.key === activeBirthdayLocation ? " active" : ""}" data-birthday-location="${location.key}" aria-pressed="${location.key === activeBirthdayLocation}">
-      <span>${location.label}</span>
+    <button type="button" class="birthday-location-button${location.key === activeBirthdayLocation ? " active" : ""}" data-birthday-location="${location.key}" aria-pressed="${location.key === activeBirthdayLocation}">
+      ${location.label}
     </button>
   `).join("");
 
