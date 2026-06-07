@@ -855,11 +855,11 @@ h3 {
 }
 
 .marquee-track.left-slide .marquee-group {
-  animation: slide-left 50s linear infinite;
+  animation: slide-left 120s linear infinite;
 }
 
 .marquee-track.right-slide .marquee-group {
-  animation: slide-right 50s linear infinite;
+  animation: slide-right 120s linear infinite;
 }
 
 .media-gallery:hover .marquee-group {

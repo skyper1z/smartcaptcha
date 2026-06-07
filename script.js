@@ -311,10 +311,15 @@ function generateGalleryItemHTML(item) {
         </div>
       </div>
     `;
+  // Use thumbnail for faster preview loading if it's an image
+  let thumbSrc = item.src;
+  if (item.type === "image" && thumbSrc.startsWith("smartcaptcha/")) {
+    thumbSrc = thumbSrc.replace("smartcaptcha/", "smartcaptcha/thumbnails/");
   }
+
   return `
     <div class="gallery-item image-item" data-src="${item.src}" data-type="image" role="button" tabindex="0">
-      <img src="${item.src}" alt="Gallery photo">
+      <img src="${thumbSrc}" alt="Gallery photo">
     </div>
   `;
 }
