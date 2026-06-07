@@ -190,6 +190,34 @@ const packages = {
       tags: ["15 photos", "3 dresses", "60 mins"]
     },
     {
+      title: "Kente Studio Session",
+      category: "Kente shoot",
+      price: "GHS 900",
+      tone: "portrait",
+      photo: "assets/photos/traditional-props.jpg",
+      bullets: [
+        "1.5 hour studio session with kente styling.",
+        "1 outfit and traditional accessories.",
+        "12 professionally edited images.",
+        "Online delivery."
+      ],
+      tags: ["Kente styling", "12 images", "Studio session"]
+    },
+    {
+      title: "Kente Premium Portrait",
+      category: "Kente shoot",
+      price: "GHS 1,400",
+      tone: "portrait",
+      photo: "assets/photos/studio-portrait.jpg",
+      bullets: [
+        "2 hour session with custom kente styling.",
+        "2 outfit changes and premium retouching.",
+        "20 professionally edited images.",
+        "Online gallery delivery."
+      ],
+      tags: ["Premium retouch", "20 images", "Kente theme"]
+    },
+    {
       title: "Birthday Spark",
       category: "Birthday shoot",
       price: "GHS 700",
@@ -314,24 +342,12 @@ const packageTabs = document.querySelectorAll("#packages .tab");
 const portraitFilterRow = document.getElementById("portrait-filters");
 const extrasList = document.querySelector("[data-extras-list]");
 let activeCategory = "wedding";
-let activePortraitFilter = "all";
+let activePortraitFilter = "studio";
 
 const portraitFilters = [
   {
-    key: "all",
-    label: "All portraits",
-    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>`,
-    category: null
-  },
-  {
-    key: "bump",
-    label: "Bump shoot",
-    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a4 4 0 0 1 4 4v4a4 4 0 1 1-8 0V8a4 4 0 0 1 4-4z"/><circle cx="12" cy="13" r="2"/></svg>`,
-    category: "Bump shoot"
-  },
-  {
-    key: "photo",
-    label: "Photo shoot",
+    key: "studio",
+    label: "Studio shoot",
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h4l2-3h4l2 3h4a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3"/></svg>`,
     category: "Photoshoot"
   },
@@ -340,6 +356,18 @@ const portraitFilters = [
     label: "Birthday shoot",
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 15h14v5H5z"/><path d="M7 15V9a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v6"/><path d="M9 7l1-3 1 3m4 0l1-3 1 3"/></svg>`,
     category: "Birthday shoot"
+  },
+  {
+    key: "kente",
+    label: "Kente shoot",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5l6 6-6 6"/><path d="M19 5l-6 6 6 6"/></svg>`,
+    category: "Kente shoot"
+  },
+  {
+    key: "bump",
+    label: "Bump shoot",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a4 4 0 0 1 4 4v4a4 4 0 1 1-8 0V8a4 4 0 0 1 4-4z"/><circle cx="12" cy="13" r="2"/></svg>`,
+    category: "Bump shoot"
   }
 ];
 
