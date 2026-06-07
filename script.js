@@ -350,9 +350,64 @@ if (backToTop) {
   }, { passive: true });
 }
 
+// Realtime Subscriptions to dynamically update without page refresh
+function setupRealtimeSubscriptions() {
+  if (!window.supabaseClient) return;
+
+  // Subscribe to gallery changes
+  window.supabaseClient
+    .channel('public:gallery_images')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_images' }, async () => {
+      const { data: dbGallery } = await window.supabaseClient
+        .from('gallery_images')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (dbGallery) {
+        galleryData = dbGallery;
+        initGallery("all");
+      }
+    })
+    .subscribe();
+
+  // Subscribe to package changes
+  window.supabaseClient
+    .channel('public:packages')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'packages' }, async () => {
+      const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
+      if (dbPackages && dbPackages.length > 0) {
+        const newPackages = { wedding: [], portrait: [], streaming: [], funeral: [] };
+        dbPackages.forEach(p => {
+          if (newPackages[p.tone]) {
+            newPackages[p.tone].push({
+              title: p.title,
+              category: p.category,
+              location: p.location,
+              price: p.price,
+              tone: p.tone,
+              photo: p.photo_url,
+              bullets: p.bullets,
+              tags: p.tags,
+              featured: p.featured
+            });
+          }
+        });
+        packages = newPackages;
+        renderPackages(activeCategory);
+        if (activeCategory === "portrait") {
+          updatePortraitFilterVisibility();
+        }
+      }
+    })
+    .subscribe();
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   // If we are not on the homepage, skip the frontend UI rendering.
   if (!packageGrid) return;
+
+  // Initialize realtime subscriptions
+  setupRealtimeSubscriptions();
+
   // Fetch data from Supabase
   try {
     const { data: dbPackages, error: pkgError } = await window.supabaseClient.from('packages').select('*');
