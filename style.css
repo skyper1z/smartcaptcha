@@ -435,9 +435,9 @@ h3 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
-  margin: 1rem auto 0;
+  margin: 0 auto;
+  margin-bottom: 1rem;
   width: min(1180px, 100%);
-  padding: 0 clamp(1rem, 3vw, 3rem);
 }
 
 .portrait-filters.hidden {
@@ -483,9 +483,8 @@ h3 {
 .birthday-location-filters {
   display: flex;
   gap: 0.4rem;
-  margin: 0.6rem auto 0;
+  margin: 0 auto 1rem;
   width: min(1180px, 100%);
-  padding: 0 clamp(1rem, 3vw, 3rem);
 }
 
 .birthday-location-filters.hidden {
