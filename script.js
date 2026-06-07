@@ -108,7 +108,7 @@ const packages = {
       bullets: [
         "45 minutes to 1 hour studio session.",
         "1 outfit.",
-        "5 professionally edited images.",
+        "8 professionally edited images.",
         "Online delivery.",
         "One backdrop setup."
       ],
@@ -142,7 +142,7 @@ const packages = {
         "20 edited images.",
         "Couple/family participation.",
         "Premium retouching.",
-        "Photo book or framed print.",
+        "Framed print (12 x 16).",
         "Behind-the-scenes video clips for social media."
       ],
       tags: ["Unlimited outfits", "20 images", "Makeup artist"]
@@ -449,7 +449,7 @@ const packages = {
     {
       title: "Funeral Coverage 2025",
       category: "Event documentation",
-      price: "GHS 6,500",
+      price: "GHS 6,000",
       tone: "funeral",
       photo: "assets/photos/funeral-moment.jpg",
       featured: true,
@@ -461,6 +461,19 @@ const packages = {
         "All edited soft copies."
       ],
       tags: ["Photo", "Video", "Drone", "Photobook"]
+    },
+    {
+      title: "Funeral Live Streaming",
+      category: "Live streaming",
+      price: "GHS 6,500",
+      tone: "funeral",
+      photo: "assets/photos/funeral-service.jpg",
+      bullets: [
+        "Professional 1080p multi-camera streaming.",
+        "Direct RTMP broadcast setup.",
+        "Dedicated wireless bonding network."
+      ],
+      tags: ["1080p Broadcast", "Multi-Camera", "Live Streaming"]
     }
   ]
 };
