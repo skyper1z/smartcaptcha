@@ -287,26 +287,37 @@ const extrasList = document.querySelector("[data-extras-list]");
 let activeCategory = "wedding";
 
 function renderPackages(category) {
-  packageGrid.innerHTML = packages[category].map((item) => `
-    <article class="package-card${item.featured ? " featured" : ""}">
-      <div class="package-body">
-        <div class="package-topline">
-          <span class="package-category">${item.category}</span>
-          ${item.featured ? '<span class="mini-label">Popular</span>' : ""}
-        </div>
-        <div class="package-visual ${item.tone}" style="--photo: url('${item.photo}')" aria-hidden="true">
-          <span>${item.title.split(" ").slice(0, 2).join(" ")}</span>
-        </div>
-        <h3>${item.title}</h3>
-        <div class="price">${item.price}</div>
-        <ul>${item.bullets.map((bullet) => `<li>${bullet}</li>`).join("")}</ul>
-        <div class="tag-row">${item.tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
-        <a class="button card-cta" href="https://wa.me/233244101740?text=Hello%20Smart%20Captcha%2C%20I%20want%20to%20book%20the%20${encodeURIComponent(item.title)}%20package%20(${encodeURIComponent(item.price)}).">
-          <span>Book package</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon-right"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-        </a>
-      </div>
-    </article>
+  const groupedPackages = packages[category].reduce((groups, item) => {
+    groups[item.category] = groups[item.category] || [];
+    groups[item.category].push(item);
+    return groups;
+  }, {});
+
+  packageGrid.innerHTML = Object.entries(groupedPackages).map(([group, items]) => `
+    <section class="package-group">
+      <div class="package-group-title">${group}</div>
+      ${items.map((item) => `
+        <article class="package-card${item.featured ? " featured" : ""}">
+          <div class="package-body">
+            <div class="package-topline">
+              <span class="package-category">${item.category}</span>
+              ${item.featured ? '<span class="mini-label">Popular</span>' : ""}
+            </div>
+            <div class="package-visual ${item.tone}" style="--photo: url('${item.photo}')" aria-hidden="true">
+              <span>${item.title.split(" ").slice(0, 2).join(" ")}</span>
+            </div>
+            <h3>${item.title}</h3>
+            <div class="price">${item.price}</div>
+            <ul>${item.bullets.map((bullet) => `<li>${bullet}</li>`).join("")}</ul>
+            <div class="tag-row">${item.tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
+            <a class="button card-cta" href="https://wa.me/233244101740?text=Hello%20Smart%20Captcha%2C%20I%20want%20to%20book%20the%20${encodeURIComponent(item.title)}%20package%20(${encodeURIComponent(item.price)}).">
+              <span>Book package</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon-right"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            </a>
+          </div>
+        </article>
+      `).join("")}
+    </section>
   `).join("");
 }
 
