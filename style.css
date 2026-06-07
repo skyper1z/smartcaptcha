@@ -431,6 +431,57 @@ h3 {
   backdrop-filter: blur(10px);
 }
 
+.portrait-filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.portrait-filters.hidden {
+  display: none;
+}
+
+.portrait-filter-button {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.85rem 0.85rem;
+  min-height: 96px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.04);
+  color: white;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.portrait-filter-button:hover,
+.portrait-filter-button.active {
+  border-color: rgba(0, 245, 212, 0.35);
+  background: rgba(0, 245, 212, 0.08);
+}
+
+.portrait-filter-icon {
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.package-grid.portrait-carousel {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.package-grid.portrait-carousel .package-card {
+  min-width: 300px;
+  flex: 0 0 300px;
+}
+
 .tab,
 .icon-button {
   border: 0;
