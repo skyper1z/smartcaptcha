@@ -860,7 +860,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!document.getElementById("package-grid")) return;
   // Fetch data from Supabase
   try {
-    const { data: dbPackages, error: pkgError } = await supabase.from('packages').select('*');
+    const { data: dbPackages, error: pkgError } = await window.supabaseClient.from('packages').select('*');
     if (dbPackages && dbPackages.length > 0) {
       const newPackages = { wedding: [], portrait: [], streaming: [], funeral: [] };
       dbPackages.forEach(p => {
@@ -887,7 +887,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }
 
-    const { data: dbGallery, error: galError } = await supabase.from('gallery_images').select('*');
+    const { data: dbGallery, error: galError } = await window.supabaseClient.from('gallery_images').select('*');
     if (dbGallery && dbGallery.length > 0) {
       galleryData = dbGallery;
       initGallery("all");

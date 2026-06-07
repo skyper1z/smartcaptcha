@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loginBtn.disabled = true;
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
       
       if (error) {
         throw error;
@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Auth Listener
-  supabase.auth.onAuthStateChange((event, session) => {
+  window.supabaseClient.auth.onAuthStateChange((event, session) => {
     if (session) {
       showDashboard();
     } else {
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // Check auth state on load
-  const { data: { session } } = await supabase.auth.getSession();
+  const { data: { session } } = await window.supabaseClient.auth.getSession();
   if (session) {
     showDashboard();
   } else {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Logout
   logoutBtn.addEventListener('click', async () => {
-    await supabase.auth.signOut();
+    await window.supabaseClient.auth.signOut();
   });
 
   function showDashboard() {
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   async function loadGallery() {
     const grid = document.getElementById('admin-gallery-grid');
     grid.innerHTML = 'Loading...';
-    const { data, error } = await supabase.from('gallery_images').select('*').order('created_at', { ascending: false });
+    const { data, error } = await window.supabaseClient.from('gallery_images').select('*').order('created_at', { ascending: false });
     
     if (error) {
       grid.innerHTML = 'Error loading gallery: ' + error.message;
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       btn.addEventListener('click', async (e) => {
         if (!confirm('Delete this image?')) return;
         const id = e.target.dataset.id;
-        await supabase.from('gallery_images').delete().eq('id', id);
+        await window.supabaseClient.from('gallery_images').delete().eq('id', id);
         loadGallery();
       });
     });
@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const filePath = `gallery/${fileName}`;
 
     // 1. Upload to Supabase Storage Bucket ('media')
-    const { error: uploadError } = await supabase.storage.from('media').upload(filePath, file);
+    const { error: uploadError } = await window.supabaseClient.storage.from('media').upload(filePath, file);
     
     if (uploadError) {
       galleryStatus.textContent = 'Upload failed: ' + uploadError.message;
@@ -140,11 +140,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // 2. Get Public URL
-    const { data: { publicUrl } } = supabase.storage.from('media').getPublicUrl(filePath);
+    const { data: { publicUrl } } = window.supabaseClient.storage.from('media').getPublicUrl(filePath);
 
     // 3. Insert into database
     galleryStatus.textContent = 'Saving to database...';
-    const { error: dbError } = await supabase.from('gallery_images').insert([{
+    const { error: dbError } = await window.supabaseClient.from('gallery_images').insert([{
       src: publicUrl,
       type: 'image',
       category: 'image'
@@ -191,14 +191,14 @@ document.addEventListener('DOMContentLoaded', async () => {
       }
 
       if (packagesToInsert.length > 0) {
-        const { error: pkgErr } = await supabase.from('packages').insert(packagesToInsert);
+        const { error: pkgErr } = await window.supabaseClient.from('packages').insert(packagesToInsert);
         if (pkgErr) throw pkgErr;
       }
 
       // 2. Migrate Gallery (from window.galleryData)
       seedStatus.textContent = 'Migrating gallery...';
       if (window.galleryData && window.galleryData.length > 0) {
-        const { error: galErr } = await supabase.from('gallery_images').insert(window.galleryData);
+        const { error: galErr } = await window.supabaseClient.from('gallery_images').insert(window.galleryData);
         if (galErr) throw galErr;
       }
 
