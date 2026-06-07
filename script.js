@@ -264,7 +264,7 @@ const packages = {
       title: "Mini Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 300",
+      price: "GHS 600",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -280,7 +280,7 @@ const packages = {
       title: "Classic Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 700",
+      price: "GHS 1,000",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
@@ -297,7 +297,7 @@ const packages = {
       title: "Premium Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 1,200",
+      price: "GHS 1,500",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -315,7 +315,7 @@ const packages = {
       title: "Luxury Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 2,200+",
+      price: "GHS 2,500+",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
@@ -330,56 +330,75 @@ const packages = {
       tags: ["25 photos", "Unlimited outfits", "A3 portrait"]
     },
     {
-      title: "Outdoor Birthday Essentials",
+      title: "Outdoor Birthday Mini",
       category: "Birthday shoot",
       location: "Location",
-      price: "GHS 800",
+      price: "GHS 700",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
-        "1-hour outdoor location session.",
+        "45-minute outdoor location session.",
         "1 outfit.",
-        "Natural lighting setup.",
+        "Natural and golden hour setup.",
         "8 professionally edited photos.",
         "Soft copies delivered online."
       ],
-      tags: ["8 photos", "Outdoor", "1 hour"]
+      tags: ["8 photos", "Outdoor", "45 mins"]
     },
     {
-      title: "Location Birthday Adventure",
+      title: "Outdoor Birthday Classic",
       category: "Birthday shoot",
       location: "Location",
-      price: "GHS 1,400",
+      price: "GHS 1,200",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
-        "Up to 2-hour outdoor location session.",
+        "1.5-hour outdoor location session.",
         "Up to 2 outfit changes.",
-        "Multiple scenic backgrounds.",
-        "15 professionally edited photos.",
-        "Color correction and enhancement.",
-        "Social media-ready images."
+        "Multiple scenic setups.",
+        "12 professionally edited photos.",
+        "Basic retouching.",
+        "Online gallery delivery."
       ],
-      tags: ["15 photos", "2 outfits", "Multi-location"]
+      tags: ["12 photos", "2 outfits", "Scenic locations"]
     },
     {
-      title: "Premium Location Celebration",
+      title: "Outdoor Birthday Premium",
       category: "Birthday shoot",
       location: "Location",
-      price: "GHS 1,900",
+      price: "GHS 1,800",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
-        "Up to 3-hour outdoor session.",
+        "2.5-hour outdoor location session.",
         "Up to 3 outfit changes.",
-        "Multiple scenic locations.",
+        "Premium location scouting.",
         "20 professionally edited photos.",
-        "Advanced color grading.",
-        "30-second birthday reel.",
-        "Social media content package."
+        "Advanced beauty retouching.",
+        "Drone aerial shots (weather permitting).",
+        "Social media content ready."
       ],
-      tags: ["20 photos", "3 outfits", "Reel included"]
+      tags: ["20 photos", "3 outfits", "Drone included"]
     },
+    {
+      title: "Outdoor Birthday Luxury",
+      category: "Birthday shoot",
+      location: "Location",
+      price: "GHS 2,800+",
+      tone: "portrait",
+      photo: "assets/photos/traditional-props.jpg",
+      bullets: [
+        "Up to 4-hour outdoor location experience.",
+        "Unlimited outfit changes.",
+        "Multiple premium locations.",
+        "30+ professionally edited photos.",
+        "Cinematic reel with location highlights.",
+        "Premium retouching.",
+        "One framed portrait.",
+        "Drone aerial cinematography included."
+      ],
+      tags: ["30+ photos", "Multiple locations", "Cinematic"]
+    }
   ],
   streaming: [
     {
@@ -477,7 +496,6 @@ const extras = [
 const packageGrid = document.querySelector("[data-package-grid]");
 const packageTabs = document.querySelectorAll("#packages .tab");
 const portraitFilterRow = document.getElementById("portrait-filters");
-const birthdayLocationRow = document.getElementById("birthday-location-filters");
 const extrasList = document.querySelector("[data-extras-list]");
 let activeCategory = "wedding";
 let activePortraitFilter = "studio";
@@ -508,11 +526,6 @@ const portraitFilters = [
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4a4 4 0 0 1 4 4v4a4 4 0 1 1-8 0V8a4 4 0 0 1 4-4z"/><circle cx="12" cy="13" r="2"/></svg>`,
     category: "Bump shoot"
   }
-];
-
-const birthdayLocations = [
-  { key: "In-studio", label: "In-studio", icon: "Studio" },
-  { key: "Location", label: "Location", icon: "Outdoor" }
 ];
 
 function renderPackageCard(item) {
@@ -561,10 +574,32 @@ function setPortraitFilter(filterKey) {
   renderPackages("portrait");
 }
 
+function updateBirthdayFilterVisibility() {
+  const birthdayLocationRow = document.getElementById("birthday-location-filters");
+  if (!birthdayLocationRow) return;
+  
+  const isBirthdaySelected = activePortraitFilter === "birthday";
+  if (isBirthdaySelected) {
+    birthdayLocationRow.classList.remove("hidden");
+    renderBirthdayLocationFilters();
+  } else {
+    birthdayLocationRow.classList.add("hidden");
+    activeBirthdayLocation = "In-studio";
+  }
+}
+
 function renderBirthdayLocationFilters() {
-  birthdayLocationRow.innerHTML = birthdayLocations.map((location) => `
-    <button type="button" class="birthday-location-button${location.key === activeBirthdayLocation ? " active" : ""}" data-birthday-location="${location.key}" aria-pressed="${location.key === activeBirthdayLocation}">
-      ${location.label}
+  const birthdayLocationRow = document.getElementById("birthday-location-filters");
+  if (!birthdayLocationRow) return;
+  
+  const birthdayLocations = [
+    { key: "In-studio", label: "In-studio" },
+    { key: "Location", label: "Out-studio" }
+  ];
+
+  birthdayLocationRow.innerHTML = birthdayLocations.map((loc) => `
+    <button type="button" class="birthday-location-button${loc.key === activeBirthdayLocation ? " active" : ""}" data-birthday-location="${loc.key}" aria-pressed="${loc.key === activeBirthdayLocation}">
+      ${loc.label}
     </button>
   `).join("");
 
@@ -577,17 +612,6 @@ function renderBirthdayLocationFilters() {
   });
 }
 
-function updateBirthdayFilterVisibility() {
-  const isBirthdaySelected = activePortraitFilter === "birthday";
-  if (isBirthdaySelected) {
-    birthdayLocationRow.classList.remove("hidden");
-    renderBirthdayLocationFilters();
-  } else {
-    birthdayLocationRow.classList.add("hidden");
-    activeBirthdayLocation = "In-studio";
-  }
-}
-
 function updatePortraitFilterVisibility() {
   if (activeCategory === "portrait") {
     portraitFilterRow.classList.remove("hidden");
@@ -595,7 +619,8 @@ function updatePortraitFilterVisibility() {
     updateBirthdayFilterVisibility();
   } else {
     portraitFilterRow.classList.add("hidden");
-    birthdayLocationRow.classList.add("hidden");
+    const birthdayLocationRow = document.getElementById("birthday-location-filters");
+    if (birthdayLocationRow) birthdayLocationRow.classList.add("hidden");
     activePortraitFilter = "studio";
     activeBirthdayLocation = "In-studio";
     packageGrid.classList.remove("portrait-carousel");
@@ -603,7 +628,7 @@ function updatePortraitFilterVisibility() {
 }
 
 function renderPackages(category) {
-  if (category === "portrait" && activePortraitFilter !== "studio") {
+  if (category === "portrait") {
     const filterInfo = portraitFilters.find((filter) => filter.key === activePortraitFilter);
     let filteredItems = packages.portrait.filter((item) => item.category === filterInfo.category);
     
