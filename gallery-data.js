@@ -4,11 +4,7 @@ const galleryData = [
     "type": "image",
     "category": "image"
   },
-  {
-    "src": "smartcaptcha/presec2g1_1772398206_3843476419209178416_78726510652.jpg",
-    "type": "image",
-    "category": "image"
-  },
+
   {
     "src": "smartcaptcha/smartcaptcha_1773406199_3851932766619312067_4010936882.jpg",
     "type": "image",
