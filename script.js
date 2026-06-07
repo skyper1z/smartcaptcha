@@ -139,13 +139,13 @@ const packages = {
         "Up to 3 hours studio session.",
         "Unlimited outfit changes.",
         "Professional makeup artist.",
-        "20+ edited images.",
+        "20 edited images.",
         "Couple/family participation.",
         "Premium retouching.",
         "Photo book or framed print.",
         "Behind-the-scenes video clips for social media."
       ],
-      tags: ["Unlimited outfits", "20+ images", "Makeup artist"]
+      tags: ["Unlimited outfits", "20 images", "Makeup artist"]
     },
     {
       title: "Bump Shoot Express",
@@ -254,11 +254,11 @@ const packages = {
         "Exclusive props and royal furniture.",
         "Professional makeup coordination.",
         "Cinematic reel.",
-        "30+ edited images.",
+        "30 edited images.",
         "Framed portrait.",
         "Premium photobook option."
       ],
-      tags: ["Heritage luxury", "30+ images", "Photobook option"]
+      tags: ["Heritage luxury", "30 images", "Photobook option"]
     },
     {
       title: "Mini Birthday Package",
