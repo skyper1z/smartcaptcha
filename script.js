@@ -330,7 +330,7 @@ const packages = {
     {
       title: "Standard Live Streaming",
       category: "Live streaming",
-      price: "GHS 4,000",
+      price: "GHS 5,500",
       tone: "streaming",
       photo: "assets/photos/funeral-service.jpg",
       featured: true,
@@ -345,7 +345,7 @@ const packages = {
     {
       title: "Thanksgiving / Lunch Stream",
       category: "Event live coverage",
-      price: "GHS 5,000",
+      price: "GHS 5,500",
       tone: "streaming",
       photo: "assets/photos/wedding-party.jpg",
       bullets: [
@@ -390,7 +390,7 @@ const packages = {
 };
 
 const extras = [
-  ["Event Live Streaming", "GHS 4,000"],
+  ["Event Live Streaming", "GHS 5,500"],
   ["Retouching per image", "GHS 200"],
   ["Creative director", "GHS 3,000"],
   ["Extra photographer", "GHS 2,000"],
