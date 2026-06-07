@@ -311,6 +311,8 @@ function generateGalleryItemHTML(item) {
         </div>
       </div>
     `;
+  }
+
   // Use thumbnail for faster preview loading if it's an image
   let thumbSrc = item.src;
   if (item.type === "image" && thumbSrc.startsWith("smartcaptcha/")) {
