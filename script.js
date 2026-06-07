@@ -845,15 +845,19 @@ function initGallery(filterCategory) {
 }
 
 // Back to Top Logic
-window.addEventListener("scroll", () => {
-  if (window.scrollY > 500) {
-    backToTop.classList.add("visible");
-  } else {
-    backToTop.classList.remove("visible");
-  }
-}, { passive: true });
+if (backToTop) {
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > 500) {
+      backToTop.classList.add("visible");
+    } else {
+      backToTop.classList.remove("visible");
+    }
+  }, { passive: true });
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
+  // If we are on the admin page, skip the frontend UI rendering.
+  if (!document.getElementById("package-grid")) return;
   // Fetch data from Supabase
   try {
     const { data: dbPackages, error: pkgError } = await supabase.from('packages').select('*');

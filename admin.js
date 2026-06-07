@@ -4,14 +4,36 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginForm = document.getElementById('login-form');
   const logoutBtn = document.getElementById('logout-btn');
   const authError = document.getElementById('auth-error');
+  const loginBtn = loginForm.querySelector('button[type="submit"]');
 
-  // Check auth state on load
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    showDashboard();
-  } else {
-    showLogin();
-  }
+  // Attach listener synchronously to prevent form reload!
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    
+    authError.classList.add('hidden');
+    loginBtn.textContent = 'Logging in...';
+    loginBtn.disabled = true;
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        throw error;
+      }
+      
+      if (data.session) {
+        showDashboard();
+      }
+    } catch (err) {
+      authError.textContent = err.message || 'Login failed.';
+      authError.classList.remove('hidden');
+    } finally {
+      loginBtn.textContent = 'Login';
+      loginBtn.disabled = false;
+    }
+  });
 
   // Auth Listener
   supabase.auth.onAuthStateChange((event, session) => {
@@ -22,19 +44,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   });
 
-  // Login
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    authError.classList.add('hidden');
-
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      authError.textContent = error.message;
-      authError.classList.remove('hidden');
-    }
-  });
+  // Check auth state on load
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    showDashboard();
+  } else {
+    showLogin();
+  }
 
   // Logout
   logoutBtn.addEventListener('click', async () => {
