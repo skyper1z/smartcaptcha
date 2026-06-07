@@ -392,13 +392,14 @@ const packages = {
         "Up to 4-hour outdoor location experience.",
         "Unlimited outfit changes.",
         "Multiple premium locations.",
-        "30+ professionally edited photos.",
+        "30 professionally edited photos.",
         "Cinematic reel with location highlights.",
         "Premium retouching.",
+        "Professional makeup service.",
         "One framed portrait.",
         "Drone aerial cinematography included."
       ],
-      tags: ["30+ photos", "Multiple locations", "Cinematic"]
+      tags: ["30 photos", "Makeup included", "Cinematic"]
     }
   ],
   streaming: [
