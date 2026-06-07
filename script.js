@@ -80,7 +80,8 @@ const packages = {
         "200 basic edited images.",
         "20 retouched images.",
         "Designed A3-sized photo book.",
-        "All unedited JPEGs, minimum 600 images."
+        "All unedited JPEGs, minimum 600 images.",
+        "One Framed image."
       ],
       tags: ["17 hours", "Creative assistant", "600+ JPEGs"]
     },
@@ -96,7 +97,8 @@ const packages = {
         "500 basic edited images.",
         "40 retouched images.",
         "Designed A3-sized photobook and frame.",
-        "All unedited JPEGs, minimum 800 images."
+        "All unedited JPEGs, minimum 800 images.",
+        "One Framed image."
       ],
       tags: ["25 hours", "40 retouched", "800+ JPEGs"]
     }
