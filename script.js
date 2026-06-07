@@ -9,7 +9,7 @@ const packages = {
       featured: true,
       bullets: [
         "6 hours coverage: bride preparation, ceremony, reception, and couple session.",
-        "2 photographers and videographers.",
+        "1 photographer and 1 videographer.",
         "150 basic edited images.",
         "10 retouched images.",
         "All unedited JPEGs, minimum 300 images."
@@ -24,11 +24,12 @@ const packages = {
       photo: "assets/photos/wedding-party.jpg",
       bullets: [
         "8 hours coverage: bride and groom preparation, ceremony, reception, and couple session.",
-        "2 photographers and videographers.",
+        "1 photographer and 2 videographers.",
         "200 basic edited images.",
         "15 retouched images.",
         "Designed A3-sized photo book.",
-        "All unedited JPEGs, minimum 400 images."
+        "All unedited JPEGs, minimum 400 images.",
+        "One Framed image."
       ],
       tags: ["8 hours", "A3 photobook", "400+ JPEGs"]
     },
@@ -40,17 +41,19 @@ const packages = {
       photo: "assets/photos/wedding-bride.jpg",
       bullets: [
         "10 hours coverage for traditional, wedding, ceremony, reception, and couple session.",
-        "2 photographers and videographers.",
+        "2 photographers and 2 videographers.",
         "200 basic edited images.",
         "15 retouched images.",
         "Designed A3-sized photo book.",
-        "All unedited JPEGs, minimum 400 images."
+        "All unedited JPEGs, minimum 400 images.",
+        "One Framed image."
+
       ],
       tags: ["10 hours", "Same day events", "A3 photobook"]
     },
     {
       title: "Two-Day Classic",
-      category: "2/3 days coverage",
+      category: "2 days coverage",
       price: "GHS 9,000",
       tone: "wedding",
       photo: "assets/photos/wedding-bride.jpg",
@@ -60,7 +63,8 @@ const packages = {
         "200 basic edited images.",
         "15 retouched images.",
         "Designed A3-sized photo book.",
-        "All unedited JPEGs, minimum 500 images."
+        "All unedited JPEGs, minimum 500 images.",
+        "One Framed image."
       ],
       tags: ["12 hours", "500+ JPEGs", "A3 photobook"]
     },
@@ -447,7 +451,7 @@ const packages = {
   ],
   funeral: [
     {
-      title: "Funeral Coverage 2025",
+      title: "Funeral Coverage 2026",
       category: "Event documentation",
       price: "GHS 6,000",
       tone: "funeral",
