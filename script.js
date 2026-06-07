@@ -266,15 +266,12 @@ packageTabs.forEach((tab) => {
 // Gallery Logic
 const galleryGrid = document.querySelector("[data-gallery-grid]");
 const galleryTabs = document.querySelectorAll("#gallery .tab");
-const loadMoreBtn = document.querySelector("[data-load-more]");
 const lightbox = document.getElementById("lightbox");
 const lightboxContent = document.querySelector("[data-lightbox-content]");
 const lightboxClose = document.querySelector("[data-lightbox-close]");
 const backToTop = document.querySelector("[data-back-to-top]");
 
 let currentGalleryItems = [];
-let galleryPage = 0;
-const ITEMS_PER_PAGE = 12;
 
 function openLightbox(item) {
   lightboxContent.innerHTML = "";
@@ -304,34 +301,66 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-function appendGalleryItems() {
-  if (!galleryGrid) return;
-  const startIndex = galleryPage * ITEMS_PER_PAGE;
-  const endIndex = startIndex + ITEMS_PER_PAGE;
-  const itemsToRender = currentGalleryItems.slice(startIndex, endIndex);
-
-  const html = itemsToRender.map(item => {
-    if (item.type === "video") {
-      return `
-        <div class="gallery-item video-item" data-src="${item.src}" data-type="video" role="button" tabindex="0">
-          <video src="${item.src}" preload="metadata" muted playsinline></video>
-          <div class="video-overlay">
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          </div>
-        </div>
-      `;
-    }
+function generateGalleryItemHTML(item) {
+  if (item.type === "video") {
     return `
-      <div class="gallery-item image-item" data-src="${item.src}" data-type="image" role="button" tabindex="0">
-        <img src="${item.src}" loading="lazy" alt="Gallery photo">
+      <div class="gallery-item video-item" data-src="${item.src}" data-type="video" role="button" tabindex="0">
+        <video src="${item.src}" preload="metadata" muted playsinline></video>
+        <div class="video-overlay">
+          <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
       </div>
     `;
-  }).join("");
+  }
+  return `
+    <div class="gallery-item image-item" data-src="${item.src}" data-type="image" role="button" tabindex="0">
+      <img src="${item.src}" loading="lazy" alt="Gallery photo">
+    </div>
+  `;
+}
 
-  galleryGrid.insertAdjacentHTML("beforeend", html);
+function initGallery(filterCategory) {
+  if (typeof galleryData === "undefined" || !galleryGrid) return;
   
-  // Attach event listeners to newly added items
-  const newItems = Array.from(galleryGrid.children).slice(startIndex);
+  // Reset
+  galleryGrid.innerHTML = "";
+  
+  currentGalleryItems = filterCategory === "all" 
+    ? galleryData 
+    : galleryData.filter(item => item.category === filterCategory);
+    
+  // Split into two rows
+  const mid = Math.ceil(currentGalleryItems.length / 2);
+  const row1Items = currentGalleryItems.slice(0, mid);
+  const row2Items = currentGalleryItems.slice(mid);
+
+  // Pad the shorter row so both have the exact same length (keeps them perfectly in sync)
+  while (row2Items.length < row1Items.length) {
+    row2Items.push(row2Items[0]);
+  }
+  while (row1Items.length < row2Items.length) {
+    row1Items.push(row1Items[0]);
+  }
+
+  const htmlRow1 = row1Items.map(generateGalleryItemHTML).join("");
+  const htmlRow2 = row2Items.map(generateGalleryItemHTML).join("");
+
+  // Build the two marquee tracks. Each contains two groups to allow seamless looping.
+  const marqueeHTML = `
+    <div class="marquee-track right-slide">
+      <div class="marquee-group">${htmlRow1}</div>
+      <div class="marquee-group" aria-hidden="true">${htmlRow1}</div>
+    </div>
+    <div class="marquee-track left-slide">
+      <div class="marquee-group">${htmlRow2}</div>
+      <div class="marquee-group" aria-hidden="true">${htmlRow2}</div>
+    </div>
+  `;
+
+  galleryGrid.innerHTML = marqueeHTML;
+
+  // Attach event listeners to all newly added items
+  const newItems = galleryGrid.querySelectorAll('.gallery-item');
   newItems.forEach(el => {
     el.addEventListener("click", () => {
       openLightbox({ type: el.dataset.type, src: el.dataset.src });
@@ -343,33 +372,6 @@ function appendGalleryItems() {
       }
     });
   });
-
-  galleryPage++;
-
-  // Hide Load More button if no more items
-  if (endIndex >= currentGalleryItems.length) {
-    loadMoreBtn.style.display = "none";
-  } else {
-    loadMoreBtn.style.display = "inline-flex";
-  }
-}
-
-function initGallery(filterCategory) {
-  if (typeof galleryData === "undefined") return;
-  
-  // Reset
-  galleryGrid.innerHTML = "";
-  galleryPage = 0;
-  
-  currentGalleryItems = filterCategory === "all" 
-    ? galleryData 
-    : galleryData.filter(item => item.category === filterCategory);
-    
-  appendGalleryItems();
-}
-
-if (loadMoreBtn) {
-  loadMoreBtn.addEventListener("click", appendGalleryItems);
 }
 
 // Back to Top Logic
