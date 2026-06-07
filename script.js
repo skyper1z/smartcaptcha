@@ -93,12 +93,12 @@ const packages = {
       photo: "assets/photos/wedding-couple.jpg",
       bullets: [
         "25 hours coverage of pre-wedding, traditional and white wedding plus reception.",
-        "3 photographers and videographers with a creative director.",
+        "2 photographers and 2 videographers with a creative director.",
         "500 basic edited images.",
         "40 retouched images.",
         "Designed A3-sized photobook and frame.",
         "All unedited JPEGs, minimum 800 images.",
-        "One Framed image."
+        "Two Framed images."
       ],
       tags: ["25 hours", "40 retouched", "800+ JPEGs"]
     }
