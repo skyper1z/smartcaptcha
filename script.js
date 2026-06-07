@@ -1,4 +1,4 @@
-const packages = {
+const defaultPackages = {
   wedding: [
     {
       title: "One-Day Essential",
@@ -504,6 +504,11 @@ const packages = {
   ]
 };
 
+let packages = defaultPackages;
+
+// Gallery Data fallback
+let galleryData = [];
+
 const extras = [
   ["Event Live Streaming", "GHS 5,500"],
   ["Retouching per image", "GHS 200"],
@@ -848,9 +853,56 @@ window.addEventListener("scroll", () => {
   }
 }, { passive: true });
 
-if (typeof galleryData !== "undefined") {
-  initGallery("all");
-}
+document.addEventListener("DOMContentLoaded", async () => {
+  // Fetch data from Supabase
+  try {
+    const { data: dbPackages, error: pkgError } = await supabase.from('packages').select('*');
+    if (dbPackages && dbPackages.length > 0) {
+      const newPackages = { wedding: [], portrait: [], streaming: [], funeral: [] };
+      dbPackages.forEach(p => {
+        if (newPackages[p.tone]) {
+          newPackages[p.tone].push({
+            title: p.title,
+            category: p.category,
+            location: p.location,
+            price: p.price,
+            tone: p.tone,
+            photo: p.photo_url,
+            bullets: p.bullets,
+            tags: p.tags,
+            featured: p.featured
+          });
+        }
+      });
+      packages = newPackages;
+      
+      // Re-render currently active category
+      renderPackages(activeCategory);
+      if (activeCategory === "portrait") {
+        updatePortraitFilterVisibility();
+      }
+    }
 
-renderPackages(activeCategory);
-renderExtras();
+    const { data: dbGallery, error: galError } = await supabase.from('gallery_images').select('*');
+    if (dbGallery && dbGallery.length > 0) {
+      galleryData = dbGallery;
+      initGallery("all");
+    } else {
+      // Load fallback gallery data from the old file if db is empty
+      const script = document.createElement('script');
+      script.src = 'gallery-data.js';
+      script.onload = () => {
+        if (window.galleryData) {
+          galleryData = window.galleryData;
+          initGallery("all");
+        }
+      };
+      document.body.appendChild(script);
+    }
+  } catch (err) {
+    console.error("Error fetching from Supabase:", err);
+  }
+
+  renderPackages(activeCategory);
+  renderExtras();
+});

@@ -12,6 +12,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=5">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
 </head>
 
@@ -344,7 +345,11 @@
     </svg>
   </a>
 
-  <script src="gallery-data.js"></script>
+  <div style="text-align: center; padding-bottom: 20px; margin-top: -20px;">
+    <p>&copy; <span id="year"></span> Smart Captcha. All rights reserved. <a href="admin.html" style="color: var(--muted); text-decoration: none; margin-left: 10px; font-size: 0.8rem; border-bottom: 1px dotted var(--muted);">Admin Login</a></p>
+  </div>
+
+  <script src="supabase-client.js"></script>
   <script src="script.js?v=11"></script>
 </body>
 
