@@ -218,32 +218,69 @@ const packages = {
       tags: ["Premium retouch", "20 images", "Kente theme"]
     },
     {
-      title: "Birthday Spark",
+      title: "Mini Birthday Package",
       category: "Birthday shoot",
-      price: "GHS 700",
+      price: "GHS 600",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
-        "1 hour birthday-themed studio session.",
-        "One outfit with fun birthday props.",
-        "10 professionally edited images.",
-        "Online delivery."
+        "30-minute studio session.",
+        "1 outfit.",
+        "1 backdrop.",
+        "5 professionally edited photos.",
+        "Soft copies delivered online."
       ],
-      tags: ["Birthday props", "10 photos", "1 hour"]
+      tags: ["5 photos", "1 outfit", "30 mins"]
     },
     {
-      title: "Birthday Party Portrait",
+      title: "Classic Birthday Package",
       category: "Birthday shoot",
-      price: "GHS 950",
+      price: "GHS 1,000",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
-        "Up to 1.5 hours with custom birthday styling.",
-        "2 outfit options and props.",
-        "15 professionally edited images.",
-        "Online gallery delivery."
+        "1-hour studio session.",
+        "Up to 2 outfit changes.",
+        "2 backdrop setups.",
+        "10 professionally edited photos.",
+        "Basic retouching.",
+        "Soft copies delivered online."
       ],
-      tags: ["Birthday theme", "15 images", "Gallery delivery"]
+      tags: ["10 photos", "2 outfits", "1 hour"]
+    },
+    {
+      title: "Premium Birthday Package",
+      category: "Birthday shoot",
+      price: "GHS 1,500",
+      tone: "portrait",
+      photo: "assets/photos/studio-portrait.jpg",
+      bullets: [
+        "2-hour studio session.",
+        "Up to 3 outfit changes.",
+        "Multiple backdrop setups.",
+        "15 professionally edited photos.",
+        "Advanced beauty retouching.",
+        "Social media-ready images.",
+        "30-second birthday reel."
+      ],
+      tags: ["15 photos", "3 outfits", "Reel included"]
+    },
+    {
+      title: "Luxury Birthday Package",
+      category: "Birthday shoot",
+      price: "GHS 2,500+",
+      tone: "portrait",
+      photo: "assets/photos/traditional-props.jpg",
+      bullets: [
+        "Up to 3-hour studio session.",
+        "Unlimited outfit changes.",
+        "Premium themed setup.",
+        "25 edited photos.",
+        "Cinematic birthday reel.",
+        "Premium retouching.",
+        "One framed portrait (A3 size)."
+      ],
+      tags: ["25 photos", "Unlimited outfits", "A3 portrait"]
     }
   ],
   streaming: [
@@ -326,11 +363,11 @@ const extras = [
   ["Thanksgiving / lunch, 5 hours", "GHS 5,000"],
   ["Same-day edit, 10 to 15 images", "GHS 2,000"],
   ["Express service within 5 working days", "GHS 4,000"],
-  ["Professional makeup", "GHS 200–GHS 500"],
-  ["Extra edited photo", "GHS 20–GHS 50"],
-  ["Short reel / video", "GHS 200–GHS 600"],
-  ["Printed photobook", "GHS 300–GHS 1,000"],
-  ["Large framed portrait", "GHS 200–GHS 800"],
+  ["Professional makeup", "GHS 250–GHS 600"],
+  ["Extra edited photo", "GHS 50 each"],
+  ["Birthday reel only", "GHS 300–GHS 800"],
+  ["Framed portrait", "GHS 150–GHS 900"],
+  ["Photobook", "GHS 400–GHS 1,800"],
   ["Adult kente traditional props", "GHS 700"],
   ["Adult props with makeup and 4 retouched pictures", "GHS 1,000"],
   ["Child kente traditional props", "GHS 400"],
