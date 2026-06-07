@@ -471,9 +471,29 @@ const packages = {
       bullets: [
         "Professional 1080p multi-camera streaming.",
         "Direct RTMP broadcast setup.",
-        "Dedicated wireless bonding network."
+        "Dedicated wireless bonding network.",
+        "Photography coverage.",
+        "Drone shots.",
+        "Photobook.",
+        "All edited soft copies."
       ],
       tags: ["1080p Broadcast", "Multi-Camera", "Live Streaming"]
+    },
+    {
+      title: "Funeral + Thanksgiving",
+      category: "Event documentation",
+      price: "GHS 9,000",
+      tone: "funeral",
+      photo: "assets/photos/funeral-moment.jpg",
+      bullets: [
+        "Photography coverage.",
+        "Video post-production.",
+        "Drone shots.",
+        "Photobook.",
+        "Social media vlogging.",
+        "All edited soft copies."
+      ],
+      tags: ["Photo", "Video", "Vlogging", "Thanksgiving"]
     }
   ]
 };
