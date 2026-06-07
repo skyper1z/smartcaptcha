@@ -243,7 +243,7 @@ const packages = {
         "25 professionally edited photos.",
         "Cinematic behind-the-scenes reel.",
         "One framed portrait (16 x 20).",
-        "Premium makeup service"
+        "Premium makeup service."
       ],
       tags: ["25 photos", "3 outfits", "Framed portrait (16 × 20)"]
     },
