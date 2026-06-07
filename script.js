@@ -190,32 +190,75 @@ const packages = {
       tags: ["15 photos", "3 dresses", "60 mins"]
     },
     {
-      title: "Kente Studio Session",
+      title: "Royal Bronze",
       category: "Kente shoot",
-      price: "GHS 900",
+      price: "GHS 1,200",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
-        "1.5 hour studio session with kente styling.",
-        "1 outfit and traditional accessories.",
-        "12 professionally edited images.",
-        "Online delivery."
+        "1-hour studio session.",
+        "Kente styling assistance.",
+        "Traditional props provided.",
+        "Traditional jewelry/beads provided.",
+        "1 setup.",
+        "10 professionally edited photos.",
+        "Soft copy delivery."
       ],
-      tags: ["Kente styling", "12 images", "Studio session"]
+      tags: ["10 photos", "Kente styling", "1 setup"]
     },
     {
-      title: "Kente Premium Portrait",
+      title: "Royal Silver",
       category: "Kente shoot",
-      price: "GHS 1,400",
+      price: "GHS 1,800",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
-        "2 hour session with custom kente styling.",
-        "2 outfit changes and premium retouching.",
-        "20 professionally edited images.",
-        "Online gallery delivery."
+        "Up to 2-hour studio session.",
+        "Traditional props and jewelry provided.",
+        "2 themed setups.",
+        "Up to 2 outfit changes.",
+        "15 professionally edited photos.",
+        "Beauty retouching.",
+        "Social media-ready images.",
+        "One 12” × 18” print."
       ],
-      tags: ["Premium retouch", "20 images", "Kente theme"]
+      tags: ["15 photos", "Beauty retouch", "12×18 print"]
+    },
+    {
+      title: "Royal Gold",
+      category: "Kente shoot",
+      price: "GHS 2,500",
+      tone: "portrait",
+      photo: "assets/photos/traditional-props.jpg",
+      bullets: [
+        "Up to 3-hour studio session.",
+        "Full traditional styling experience.",
+        "Premium props and jewelry provided.",
+        "Multiple cultural setups.",
+        "Up to 3 outfit changes.",
+        "25 professionally edited photos.",
+        "Cinematic behind-the-scenes reel.",
+        "One framed portrait.",
+        "Social media content package."
+      ],
+      tags: ["25 photos", "3 outfits", "Framed portrait"]
+    },
+    {
+      title: "Heritage Luxury Package",
+      category: "Kente shoot",
+      price: "GHS 3,500–GHS 5,000+",
+      tone: "portrait",
+      photo: "assets/photos/studio-portrait.jpg",
+      bullets: [
+        "Premium studio styling.",
+        "Exclusive props and royal furniture.",
+        "Professional makeup coordination.",
+        "Cinematic reel.",
+        "30+ edited images.",
+        "Framed portrait.",
+        "Premium photobook option."
+      ],
+      tags: ["Heritage luxury", "30+ images", "Photobook option"]
     },
     {
       title: "Mini Birthday Package",
@@ -363,11 +406,13 @@ const extras = [
   ["Thanksgiving / lunch, 5 hours", "GHS 5,000"],
   ["Same-day edit, 10 to 15 images", "GHS 2,000"],
   ["Express service within 5 working days", "GHS 4,000"],
-  ["Professional makeup", "GHS 250–GHS 600"],
+  ["Professional makeup", "GHS 250–GHS 700"],
   ["Extra edited photo", "GHS 50 each"],
   ["Birthday reel only", "GHS 300–GHS 800"],
   ["Framed portrait", "GHS 150–GHS 900"],
-  ["Photobook", "GHS 400–GHS 1,800"],
+  ["Printed photobook", "GHS 500–GHS 2,000"],
+  ["Extra outfit change", "GHS 150"],
+  ["Same-day delivery", "+30% of package price"],
   ["Adult kente traditional props", "GHS 700"],
   ["Adult props with makeup and 4 retouched pictures", "GHS 1,000"],
   ["Child kente traditional props", "GHS 400"],
