@@ -314,7 +314,7 @@ function generateGalleryItemHTML(item) {
   }
   return `
     <div class="gallery-item image-item" data-src="${item.src}" data-type="image" role="button" tabindex="0">
-      <img src="${item.src}" loading="lazy" alt="Gallery photo">
+      <img src="${item.src}" alt="Gallery photo">
     </div>
   `;
 }
