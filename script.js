@@ -264,7 +264,7 @@ const packages = {
       title: "Mini Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 600",
+      price: "GHS 300",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -280,7 +280,7 @@ const packages = {
       title: "Classic Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 1,000",
+      price: "GHS 500",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
@@ -297,7 +297,7 @@ const packages = {
       title: "Premium Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 1,500",
+      price: "GHS 1,000",
       tone: "portrait",
       photo: "assets/photos/studio-portrait.jpg",
       bullets: [
@@ -315,7 +315,7 @@ const packages = {
       title: "Luxury Birthday Package",
       category: "Birthday shoot",
       location: "In-studio",
-      price: "GHS 2,500+",
+      price: "GHS 2,000",
       tone: "portrait",
       photo: "assets/photos/traditional-props.jpg",
       bullets: [
@@ -325,9 +325,10 @@ const packages = {
         "25 edited photos.",
         "Cinematic birthday reel.",
         "Premium retouching.",
+        "Professional makeup service.",
         "One framed portrait (A3 size)."
       ],
-      tags: ["25 photos", "Unlimited outfits", "A3 portrait"]
+      tags: ["25 photos", "Makeup included", "A3 portrait"]
     },
     {
       title: "Outdoor Birthday Mini",
