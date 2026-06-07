@@ -195,10 +195,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (pkgErr) throw pkgErr;
       }
 
-      // 2. Migrate Gallery (from window.galleryData)
+      // 2. Migrate Gallery (from window.legacyGalleryData)
       seedStatus.textContent = 'Migrating gallery...';
-      if (window.galleryData && window.galleryData.length > 0) {
-        const { error: galErr } = await window.supabaseClient.from('gallery_images').insert(window.galleryData);
+      if (window.legacyGalleryData && window.legacyGalleryData.length > 0) {
+        const { error: galErr } = await window.supabaseClient.from('gallery_images').insert(window.legacyGalleryData);
         if (galErr) throw galErr;
       }
 

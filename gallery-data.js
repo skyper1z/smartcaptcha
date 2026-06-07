@@ -1,4 +1,4 @@
-const galleryData = [
+window.legacyGalleryData = [
   {
     "src": "smartcaptcha/smartcaptcha_1777746401_3888341080194418650_4010936882.jpg",
     "type": "image",
