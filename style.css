@@ -796,7 +796,8 @@ h3 {
   background-position: center 28%;
 }
 
-.package-visual.engagement {
+.package-visual.engagement,
+.package-visual.others {
   background:
     linear-gradient(135deg, rgba(5, 11, 13, 0.3), rgba(219, 39, 119, 0.55)),
     var(--photo),
