@@ -319,7 +319,9 @@ function renderPackages(category) {
   // EVENTS — filter by activeEvent + activeEventTab
   if (category === "events") {
     const eventPackages = Array.isArray(packages[activeEvent]) ? packages[activeEvent] : [];
-    const filtered = eventPackages.filter(item => item && item.tab === activeEventTab);
+    const filtered = eventPackages.filter(item => 
+      item && item.tab && activeEventTab && item.tab.trim().toLowerCase() === activeEventTab.trim().toLowerCase()
+    );
     packageGrid.innerHTML = filtered.length
       ? `<div class="package-carousel">${filtered.map(renderPackageCard).join("")}</div>`
       : `<div class="empty-state">No ${activeEventTab} packages available yet.</div>`;
