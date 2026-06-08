@@ -452,6 +452,10 @@ if (backToTop) {
 }
 
 // ─── SUPABASE REALTIME ───────────────────────────────────────────────────────
+
+// Tones that require sub-tab filtering (need a `tab` field to render correctly)
+const EVENT_TONES = ['wedding', 'funeral', 'engagement', 'naming', 'corporate', 'concert'];
+
 function buildPackagesFromDB(dbPackages) {
   const newPackages = {};
   ALL_TONES.forEach(t => newPackages[t] = []);
@@ -473,15 +477,26 @@ function buildPackagesFromDB(dbPackages) {
     }
   });
 
-  // Fallback to defaults for any empty tone
+  // Fallback logic per tone:
+  // 1. If a tone has zero packages → use defaults
+  // 2. For event tones: if packages exist but NONE have a tab value
+  //    (old pre-migration data) → use defaults so sub-tabs work correctly
   ALL_TONES.forEach(tone => {
-    if (newPackages[tone].length === 0 && window.defaultPackages && window.defaultPackages[tone]) {
-      newPackages[tone] = window.defaultPackages[tone];
+    const arr = newPackages[tone];
+    const defaults = window.defaultPackages && window.defaultPackages[tone];
+    if (!defaults) return;
+
+    const isEmpty = arr.length === 0;
+    const isEventToneWithNoTabs = EVENT_TONES.includes(tone) && arr.length > 0 && arr.every(p => !p.tab);
+
+    if (isEmpty || isEventToneWithNoTabs) {
+      newPackages[tone] = defaults;
     }
   });
 
   return newPackages;
 }
+
 
 function setupRealtimeSubscriptions() {
   if (!window.supabaseClient) return;
