@@ -1380,6 +1380,12 @@ h3 {
     min-height: 36px;
   }
 
+  .event-type-filters,
+  .event-sub-tab-filters,
+  .portrait-filters {
+    justify-content: center;
+  }
+
   .package-card {
     min-height: auto;
   }
