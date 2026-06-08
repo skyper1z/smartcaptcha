@@ -1,5 +1,6 @@
 // defaultPackages is loaded from packages-data.js
-const ALL_TONES = ['wedding', 'funeral', 'engagement', 'naming', 'corporate', 'concert', 'portrait', 'streaming'];
+let EVENT_TONES = ['wedding', 'funeral', 'engagement', 'naming', 'corporate', 'concert'];
+let ALL_TONES = ['wedding', 'funeral', 'engagement', 'naming', 'corporate', 'concert', 'portrait', 'streaming'];
 let packages = window.defaultPackages || {};
 
 // Gallery Data fallback
@@ -36,7 +37,7 @@ const extras = [
 ];
 
 // ─── EVENT DEFINITIONS ──────────────────────────────────────────────────────
-const eventTypes = [
+let eventTypes = [
   {
     key: "wedding",
     label: "Wedding",
@@ -74,6 +75,46 @@ const eventTypes = [
     tabs: ["Coverage", "Streaming", "Full Production"]
   }
 ];
+
+function syncTonesFromEventTypes() {
+  EVENT_TONES = eventTypes.map(e => e.key);
+  ALL_TONES = [...EVENT_TONES, 'portrait', 'streaming'];
+}
+
+async function loadEventTypesFromDB() {
+  if (!window.supabaseClient) return;
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('event_types')
+      .select('*')
+      .order('created_at', { ascending: true });
+
+    if (error) {
+      console.warn("Could not load event types from database (using default fallback):", error.message);
+      return;
+    }
+
+    if (data && data.length > 0) {
+      eventTypes = data.map(evt => ({
+        key: evt.key,
+        label: evt.label,
+        icon: evt.icon || `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+        tabs: Array.isArray(evt.tabs) ? evt.tabs : []
+      }));
+      syncTonesFromEventTypes();
+      
+      // If activeEvent is no longer valid, default to first event type
+      if (!eventTypes.some(e => e.key === activeEvent)) {
+        activeEvent = eventTypes[0] ? eventTypes[0].key : "";
+        const activeEvtDef = eventTypes.find(e => e.key === activeEvent);
+        activeEventTab = activeEvtDef && activeEvtDef.tabs[0] ? activeEvtDef.tabs[0] : "";
+      }
+    }
+  } catch (err) {
+    console.error("Error fetching event types:", err);
+  }
+}
+
 
 // ─── STATE ──────────────────────────────────────────────────────────────────
 const packageGrid = document.querySelector("[data-package-grid]");
@@ -454,7 +495,6 @@ if (backToTop) {
 // ─── SUPABASE REALTIME ───────────────────────────────────────────────────────
 
 // Tones that require sub-tab filtering (need a `tab` field to render correctly)
-const EVENT_TONES = ['wedding', 'funeral', 'engagement', 'naming', 'corporate', 'concert'];
 
 function buildPackagesFromDB(dbPackages) {
   const newPackages = {};
@@ -527,6 +567,20 @@ function setupRealtimeSubscriptions() {
       }
     })
     .subscribe();
+
+  window.supabaseClient
+    .channel('public:event_types')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'event_types' }, async () => {
+      await loadEventTypesFromDB();
+      // Refetch packages because EVENT_TONES has updated
+      const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
+      if (dbPackages) {
+        packages = buildPackagesFromDB(dbPackages);
+      }
+      renderPackages(activeCategory);
+      if (activeCategory === "events") updateEventFilterVisibility();
+    })
+    .subscribe();
 }
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
@@ -541,6 +595,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   updateEventFilterVisibility();
   renderPackages(activeCategory);
   renderExtras();
+
+  // Load dynamic event types first
+  await loadEventTypesFromDB();
 
   setupRealtimeSubscriptions();
 
