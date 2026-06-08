@@ -512,6 +512,107 @@ h3 {
   box-shadow: 0 4px 12px rgba(255, 190, 11, 0.25);
 }
 
+/* ── Event Type Filter Chips ── */
+.event-type-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0 auto 1.2rem;
+  width: min(1180px, 100%);
+}
+
+.event-type-filters.hidden {
+  display: none;
+}
+
+.event-type-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  font-family: var(--font-sans);
+  letter-spacing: 0.01em;
+}
+
+.event-type-button:hover {
+  color: white;
+  border-color: rgba(0, 245, 212, 0.3);
+  background: rgba(0, 245, 212, 0.07);
+  transform: translateY(-2px);
+}
+
+.event-type-button.active {
+  color: #050b0d;
+  background: linear-gradient(135deg, var(--teal-bright), var(--teal));
+  border-color: transparent;
+  box-shadow: 0 4px 16px rgba(0, 245, 212, 0.3);
+  transform: translateY(-1px);
+}
+
+.event-type-icon {
+  display: inline-flex;
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+}
+
+.event-type-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Event Sub-Tab Buttons ── */
+.event-sub-tab-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 auto 1.2rem;
+  width: min(1180px, 100%);
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(5, 11, 13, 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.event-sub-tab-filters.hidden {
+  display: none;
+}
+
+.event-subtab-button {
+  padding: 0.38rem 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: var(--font-sans);
+}
+
+.event-subtab-button:hover {
+  color: white;
+  border-color: rgba(255, 190, 11, 0.35);
+  background: rgba(255, 190, 11, 0.07);
+}
+
+.event-subtab-button.active {
+  color: #050b0d;
+  background: var(--gold);
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(255, 190, 11, 0.3);
+}
+
 .package-carousel {
   display: flex;
   flex-wrap: nowrap;
@@ -693,6 +794,42 @@ h3 {
     #1a1114;
   background-size: cover;
   background-position: center 28%;
+}
+
+.package-visual.engagement {
+  background:
+    linear-gradient(135deg, rgba(5, 11, 13, 0.3), rgba(219, 39, 119, 0.55)),
+    var(--photo),
+    #2d0a1a;
+  background-size: cover;
+  background-position: center 30%;
+}
+
+.package-visual.naming {
+  background:
+    linear-gradient(135deg, rgba(5, 11, 13, 0.3), rgba(217, 119, 6, 0.6)),
+    var(--photo),
+    #1e1200;
+  background-size: cover;
+  background-position: center;
+}
+
+.package-visual.corporate {
+  background:
+    linear-gradient(135deg, rgba(5, 11, 13, 0.3), rgba(67, 56, 202, 0.65)),
+    var(--photo),
+    #0d0d2b;
+  background-size: cover;
+  background-position: center;
+}
+
+.package-visual.concert {
+  background:
+    linear-gradient(135deg, rgba(5, 11, 13, 0.3), rgba(109, 40, 217, 0.65)),
+    var(--photo),
+    #130d24;
+  background-size: cover;
+  background-position: center;
 }
 
 .price {

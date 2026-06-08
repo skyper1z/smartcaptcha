@@ -1,5 +1,6 @@
 // defaultPackages is loaded from packages-data.js
-let packages = window.defaultPackages || { wedding: [], portrait: [], streaming: [], funeral: [] };
+const ALL_TONES = ['wedding', 'funeral', 'engagement', 'naming', 'corporate', 'concert', 'portrait', 'streaming'];
+let packages = window.defaultPackages || {};
 
 // Gallery Data fallback
 let galleryData = [];
@@ -34,14 +35,63 @@ const extras = [
   ["Child props with makeup and 3 retouched pictures", "GHS 800"]
 ];
 
+// ─── EVENT DEFINITIONS ──────────────────────────────────────────────────────
+const eventTypes = [
+  {
+    key: "wedding",
+    label: "Wedding",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2 7h7l-5.5 4 2 7L12 16l-5.5 4 2-7L3 9h7z"/></svg>`,
+    tabs: ["Photo & Video", "Live Streaming", "Drone"]
+  },
+  {
+    key: "funeral",
+    label: "Funeral",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M12 12v10"/><path d="M9 14h6"/></svg>`,
+    tabs: ["Coverage", "Live Streaming", "Full Package"]
+  },
+  {
+    key: "engagement",
+    label: "Engagement",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+    tabs: ["Classic", "Premium", "Luxury"]
+  },
+  {
+    key: "naming",
+    label: "Naming",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    tabs: ["Essential", "Classic", "Premium"]
+  },
+  {
+    key: "corporate",
+    label: "Corporate",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>`,
+    tabs: ["Conference", "Launch & Party", "Award Night"]
+  },
+  {
+    key: "concert",
+    label: "Concert",
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+    tabs: ["Coverage", "Streaming", "Full Production"]
+  }
+];
+
+// ─── STATE ──────────────────────────────────────────────────────────────────
 const packageGrid = document.querySelector("[data-package-grid]");
 const packageTabs = document.querySelectorAll("#packages .tab");
 const portraitFilterRow = document.getElementById("portrait-filters");
+const birthdayLocationRow = document.getElementById("birthday-location-filters");
+const eventTypeRow = document.getElementById("event-type-filters");
+const eventSubTabRow = document.getElementById("event-sub-tab-filters");
 const extrasList = document.querySelector("[data-extras-list]");
-let activeCategory = "wedding";
+
+let activeCategory = "events";
+let activeEvent = "wedding";
+let activeEventTab = "Photo & Video";
+
 let activePortraitFilter = "studio";
 let activeBirthdayLocation = "In-studio";
 
+// ─── PORTRAIT FILTERS ────────────────────────────────────────────────────────
 const portraitFilters = [
   {
     key: "studio",
@@ -69,6 +119,7 @@ const portraitFilters = [
   }
 ];
 
+// ─── CARD RENDERER ───────────────────────────────────────────────────────────
 function renderPackageCard(item) {
   const bullets = Array.isArray(item.bullets) ? item.bullets : [];
   const tags = Array.isArray(item.tags) ? item.tags : [];
@@ -95,6 +146,51 @@ function renderPackageCard(item) {
   `;
 }
 
+// ─── EVENT TYPE CHIPS ────────────────────────────────────────────────────────
+function renderEventTypeFilters() {
+  if (!eventTypeRow) return;
+  eventTypeRow.innerHTML = eventTypes.map((evt) => `
+    <button type="button" class="event-type-button${evt.key === activeEvent ? " active" : ""}" data-event-type="${evt.key}" aria-pressed="${evt.key === activeEvent}">
+      <span class="event-type-icon">${evt.icon}</span>
+      <span>${evt.label}</span>
+    </button>
+  `).join("");
+
+  eventTypeRow.querySelectorAll("[data-event-type]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const eventDef = eventTypes.find(e => e.key === btn.dataset.eventType);
+      activeEvent = btn.dataset.eventType;
+      activeEventTab = eventDef ? eventDef.tabs[0] : "";
+      renderEventTypeFilters();
+      renderEventSubTabs();
+      renderPackages("events");
+    });
+  });
+}
+
+// ─── EVENT SUB-TABS ──────────────────────────────────────────────────────────
+function renderEventSubTabs() {
+  if (!eventSubTabRow) return;
+  const eventDef = eventTypes.find(e => e.key === activeEvent);
+  if (!eventDef) { eventSubTabRow.classList.add("hidden"); return; }
+
+  eventSubTabRow.classList.remove("hidden");
+  eventSubTabRow.innerHTML = eventDef.tabs.map((tab) => `
+    <button type="button" class="event-subtab-button${tab === activeEventTab ? " active" : ""}" data-event-tab="${tab}" aria-pressed="${tab === activeEventTab}">
+      ${tab}
+    </button>
+  `).join("");
+
+  eventSubTabRow.querySelectorAll("[data-event-tab]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      activeEventTab = btn.dataset.eventTab;
+      renderEventSubTabs();
+      renderPackages("events");
+    });
+  });
+}
+
+// ─── PORTRAIT FILTERS ────────────────────────────────────────────────────────
 function renderPortraitFilters() {
   portraitFilterRow.innerHTML = portraitFilters.map((filter) => `
     <button type="button" class="portrait-filter-button${filter.key === activePortraitFilter ? " active" : ""}" data-portrait-filter="${filter.key}" aria-pressed="${filter.key === activePortraitFilter}">
@@ -118,9 +214,7 @@ function setPortraitFilter(filterKey) {
 }
 
 function updateBirthdayFilterVisibility() {
-  const birthdayLocationRow = document.getElementById("birthday-location-filters");
   if (!birthdayLocationRow) return;
-
   const isBirthdaySelected = activePortraitFilter === "birthday";
   if (isBirthdaySelected) {
     birthdayLocationRow.classList.remove("hidden");
@@ -132,14 +226,11 @@ function updateBirthdayFilterVisibility() {
 }
 
 function renderBirthdayLocationFilters() {
-  const birthdayLocationRow = document.getElementById("birthday-location-filters");
   if (!birthdayLocationRow) return;
-
   const birthdayLocations = [
     { key: "In-studio", label: "In-studio" },
     { key: "Location", label: "Out-studio" }
   ];
-
   birthdayLocationRow.innerHTML = birthdayLocations.map((loc) => `
     <button type="button" class="birthday-location-button${loc.key === activeBirthdayLocation ? " active" : ""}" data-birthday-location="${loc.key}" aria-pressed="${loc.key === activeBirthdayLocation}">
       ${loc.label}
@@ -155,6 +246,7 @@ function renderBirthdayLocationFilters() {
   });
 }
 
+// ─── VISIBILITY HELPERS ──────────────────────────────────────────────────────
 function updatePortraitFilterVisibility() {
   if (activeCategory === "portrait") {
     portraitFilterRow.classList.remove("hidden");
@@ -162,31 +254,53 @@ function updatePortraitFilterVisibility() {
     updateBirthdayFilterVisibility();
   } else {
     portraitFilterRow.classList.add("hidden");
-    const birthdayLocationRow = document.getElementById("birthday-location-filters");
     if (birthdayLocationRow) birthdayLocationRow.classList.add("hidden");
     activePortraitFilter = "studio";
     activeBirthdayLocation = "In-studio";
   }
 }
 
+function updateEventFilterVisibility() {
+  if (activeCategory === "events") {
+    if (eventTypeRow) eventTypeRow.classList.remove("hidden");
+    renderEventTypeFilters();
+    renderEventSubTabs();
+  } else {
+    if (eventTypeRow) eventTypeRow.classList.add("hidden");
+    if (eventSubTabRow) eventSubTabRow.classList.add("hidden");
+  }
+}
+
+// ─── RENDER PACKAGES ─────────────────────────────────────────────────────────
 function renderPackages(category) {
+  if (!packageGrid) return;
+
+  // EVENTS — filter by activeEvent + activeEventTab
+  if (category === "events") {
+    const eventPackages = Array.isArray(packages[activeEvent]) ? packages[activeEvent] : [];
+    const filtered = eventPackages.filter(item => item && item.tab === activeEventTab);
+    packageGrid.innerHTML = filtered.length
+      ? `<div class="package-carousel">${filtered.map(renderPackageCard).join("")}</div>`
+      : `<div class="empty-state">No ${activeEventTab} packages available yet.</div>`;
+    return;
+  }
+
+  // PORTRAIT — sub-filtered by type then birthday location
   if (category === "portrait") {
     const filterInfo = portraitFilters.find((filter) => filter.key === activePortraitFilter);
     if (!filterInfo) return;
     const portraitPackages = Array.isArray(packages.portrait) ? packages.portrait : [];
     let filteredItems = portraitPackages.filter((item) => item && item.category === filterInfo.category);
-
-    // Additional filtering for birthday location
     if (activePortraitFilter === "birthday") {
       filteredItems = filteredItems.filter((item) => item.location === activeBirthdayLocation);
     }
-
     packageGrid.innerHTML = filteredItems.length
       ? `<div class="package-carousel">${filteredItems.map(renderPackageCard).join("")}</div>`
       : `<div class="empty-state">No ${filterInfo.label} packages available yet.</div>`;
     return;
   }
 
+  // STREAMING — group by category
   const categoryPackages = Array.isArray(packages[category]) ? packages[category] : [];
   const groupedPackages = categoryPackages.reduce((groups, item) => {
     if (item && item.category) {
@@ -206,6 +320,7 @@ function renderPackages(category) {
   `).join("");
 }
 
+// ─── EXTRAS ──────────────────────────────────────────────────────────────────
 function renderExtras() {
   extrasList.innerHTML = extras.map(([name, price]) => `
     <article class="extra-item">
@@ -215,6 +330,7 @@ function renderExtras() {
   `).join("");
 }
 
+// ─── TAB LISTENERS ───────────────────────────────────────────────────────────
 packageTabs.forEach((tab) => {
   tab.addEventListener("click", () => {
     activeCategory = tab.dataset.filter;
@@ -223,14 +339,14 @@ packageTabs.forEach((tab) => {
       item.classList.toggle("active", isActive);
       item.setAttribute("aria-selected", String(isActive));
     });
+    updateEventFilterVisibility();
     updatePortraitFilterVisibility();
     renderPackages(activeCategory);
   });
 });
 
-// Gallery Logic
+// ─── GALLERY ─────────────────────────────────────────────────────────────────
 const galleryGrid = document.querySelector("[data-gallery-grid]");
-const galleryTabs = document.querySelectorAll("#gallery .tab");
 const lightbox = document.getElementById("lightbox");
 const lightboxContent = document.querySelector("[data-lightbox-content]");
 const lightboxClose = document.querySelector("[data-lightbox-close]");
@@ -246,12 +362,12 @@ function openLightbox(item) {
     lightboxContent.innerHTML = `<img src="${item.src}" alt="Gallery Image">`;
   }
   lightbox.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden"; // Prevent scrolling
+  document.body.style.overflow = "hidden";
 }
 
 function closeLightbox() {
   lightbox.setAttribute("aria-hidden", "true");
-  lightboxContent.innerHTML = ""; // Stop video playback
+  lightboxContent.innerHTML = "";
   document.body.style.overflow = "";
 }
 
@@ -259,7 +375,6 @@ lightboxClose.addEventListener("click", closeLightbox);
 lightbox.addEventListener("click", (e) => {
   if (e.target === lightbox) closeLightbox();
 });
-
 document.addEventListener("keydown", (e) => {
   if (e.key === "Escape" && lightbox.getAttribute("aria-hidden") === "false") {
     closeLightbox();
@@ -277,13 +392,10 @@ function generateGalleryItemHTML(item) {
       </div>
     `;
   }
-
-  // Use thumbnail for faster preview loading if it's an image
   let thumbSrc = item.src;
   if (item.type === "image" && thumbSrc.startsWith("smartcaptcha/")) {
     thumbSrc = thumbSrc.replace("smartcaptcha/", "smartcaptcha/thumbnails/");
   }
-
   return `
     <div class="gallery-item image-item" data-src="${item.src}" data-type="image" role="button" tabindex="0">
       <img src="${thumbSrc}" alt="Gallery photo">
@@ -293,32 +405,22 @@ function generateGalleryItemHTML(item) {
 
 function initGallery(filterCategory) {
   if (typeof galleryData === "undefined" || !galleryGrid) return;
-
-  // Reset
   galleryGrid.innerHTML = "";
-
   currentGalleryItems = filterCategory === "all"
     ? galleryData
     : galleryData.filter(item => item.category === filterCategory);
 
-  // Split into two rows
   const mid = Math.ceil(currentGalleryItems.length / 2);
   const row1Items = currentGalleryItems.slice(0, mid);
   const row2Items = currentGalleryItems.slice(mid);
 
-  // Pad the shorter row so both have the exact same length (keeps them perfectly in sync)
-  while (row2Items.length < row1Items.length) {
-    row2Items.push(row2Items[0]);
-  }
-  while (row1Items.length < row2Items.length) {
-    row1Items.push(row1Items[0]);
-  }
+  while (row2Items.length < row1Items.length) row2Items.push(row2Items[0]);
+  while (row1Items.length < row2Items.length) row1Items.push(row1Items[0]);
 
   const htmlRow1 = row1Items.map(generateGalleryItemHTML).join("");
   const htmlRow2 = row2Items.map(generateGalleryItemHTML).join("");
 
-  // Build the two marquee tracks. Each contains two groups to allow seamless looping.
-  const marqueeHTML = `
+  galleryGrid.innerHTML = `
     <div class="marquee-track right-slide">
       <div class="marquee-group">${htmlRow1}</div>
       <div class="marquee-group" aria-hidden="true">${htmlRow1}</div>
@@ -329,11 +431,7 @@ function initGallery(filterCategory) {
     </div>
   `;
 
-  galleryGrid.innerHTML = marqueeHTML;
-
-  // Attach event listeners to all newly added items
-  const newItems = galleryGrid.querySelectorAll('.gallery-item');
-  newItems.forEach(el => {
+  galleryGrid.querySelectorAll('.gallery-item').forEach(el => {
     el.addEventListener("click", () => {
       openLightbox({ type: el.dataset.type, src: el.dataset.src });
     });
@@ -346,22 +444,48 @@ function initGallery(filterCategory) {
   });
 }
 
-// Back to Top Logic
+// ─── BACK TO TOP ─────────────────────────────────────────────────────────────
 if (backToTop) {
   window.addEventListener("scroll", () => {
-    if (window.scrollY > 500) {
-      backToTop.classList.add("visible");
-    } else {
-      backToTop.classList.remove("visible");
-    }
+    backToTop.classList.toggle("visible", window.scrollY > 500);
   }, { passive: true });
 }
 
-// Realtime Subscriptions to dynamically update without page refresh
+// ─── SUPABASE REALTIME ───────────────────────────────────────────────────────
+function buildPackagesFromDB(dbPackages) {
+  const newPackages = {};
+  ALL_TONES.forEach(t => newPackages[t] = []);
+
+  dbPackages.forEach(p => {
+    if (newPackages[p.tone] !== undefined) {
+      newPackages[p.tone].push({
+        title: p.title,
+        category: p.category,
+        tab: p.tab || null,
+        location: p.location,
+        price: p.price,
+        tone: p.tone,
+        photo: p.photo_url,
+        bullets: p.bullets,
+        tags: p.tags,
+        featured: p.featured
+      });
+    }
+  });
+
+  // Fallback to defaults for any empty tone
+  ALL_TONES.forEach(tone => {
+    if (newPackages[tone].length === 0 && window.defaultPackages && window.defaultPackages[tone]) {
+      newPackages[tone] = window.defaultPackages[tone];
+    }
+  });
+
+  return newPackages;
+}
+
 function setupRealtimeSubscriptions() {
   if (!window.supabaseClient) return;
 
-  // Subscribe to gallery changes
   window.supabaseClient
     .channel('public:gallery_images')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'gallery_images' }, async () => {
@@ -376,105 +500,68 @@ function setupRealtimeSubscriptions() {
     })
     .subscribe();
 
-  // Subscribe to package changes
   window.supabaseClient
     .channel('public:packages')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'packages' }, async () => {
       const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
       if (dbPackages && dbPackages.length > 0) {
-        const newPackages = { wedding: [], portrait: [], streaming: [], funeral: [] };
-        dbPackages.forEach(p => {
-          if (newPackages[p.tone]) {
-            newPackages[p.tone].push({
-              title: p.title,
-              category: p.category,
-              location: p.location,
-              price: p.price,
-              tone: p.tone,
-              photo: p.photo_url,
-              bullets: p.bullets,
-              tags: p.tags,
-              featured: p.featured
-            });
-          }
-        });
-
-        // Fallback to default packages if a category is empty in Supabase
-        for (const tone of ['wedding', 'portrait', 'streaming', 'funeral']) {
-          if (newPackages[tone].length === 0 && window.defaultPackages && window.defaultPackages[tone]) {
-            newPackages[tone] = window.defaultPackages[tone];
-          }
-        }
-
-        packages = newPackages;
+        packages = buildPackagesFromDB(dbPackages);
         renderPackages(activeCategory);
-        if (activeCategory === "portrait") {
-          updatePortraitFilterVisibility();
-        }
+        if (activeCategory === "portrait") updatePortraitFilterVisibility();
+        if (activeCategory === "events") updateEventFilterVisibility();
       }
     })
     .subscribe();
 }
 
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
-  // If we are not on the homepage, skip the frontend UI rendering.
+  // Set year
+  const yearEl = document.getElementById("year");
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
   if (!packageGrid) return;
 
-  // Render defaults immediately so the user sees them instantly
+  // Render defaults immediately
+  updateEventFilterVisibility();
   renderPackages(activeCategory);
   renderExtras();
 
-  // Initialize realtime subscriptions
   setupRealtimeSubscriptions();
 
-  // Fetch data from Supabase
+  // ── Packages fetch (independent) ──────────────────────────────────────────
   try {
-    const { data: dbPackages, error: pkgError } = await window.supabaseClient.from('packages').select('*');
+    const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
     if (dbPackages && dbPackages.length > 0) {
-      const newPackages = { wedding: [], portrait: [], streaming: [], funeral: [] };
-      dbPackages.forEach(p => {
-        if (newPackages[p.tone]) {
-          newPackages[p.tone].push({
-            title: p.title,
-            category: p.category,
-            location: p.location,
-            price: p.price,
-            tone: p.tone,
-            photo: p.photo_url,
-            bullets: p.bullets,
-            tags: p.tags,
-            featured: p.featured
-          });
-        }
-      });
-
-      // Fallback to default packages if a category is empty in Supabase
-      for (const tone of ['wedding', 'portrait', 'streaming', 'funeral']) {
-        if (newPackages[tone].length === 0 && window.defaultPackages && window.defaultPackages[tone]) {
-          newPackages[tone] = window.defaultPackages[tone];
-        }
-      }
-
-      packages = newPackages;
-      
-      // Re-render currently active category
+      packages = buildPackagesFromDB(dbPackages);
       renderPackages(activeCategory);
-      if (activeCategory === "portrait") {
-        updatePortraitFilterVisibility();
-      }
+      if (activeCategory === "events") updateEventFilterVisibility();
+      if (activeCategory === "portrait") updatePortraitFilterVisibility();
     }
+  } catch (err) {
+    console.error("Error fetching packages from Supabase:", err);
+  }
 
-    const { data: dbGallery, error: galError } = await window.supabaseClient.from('gallery_images').select('*').order('created_at', { ascending: false });
+  // ── Gallery fetch (independent — never blocked by packages errors) ─────────
+  try {
+    const { data: dbGallery } = await window.supabaseClient
+      .from('gallery_images')
+      .select('*')
+      .order('created_at', { ascending: false });
+
     if (dbGallery && dbGallery.length > 0) {
       galleryData = dbGallery;
       initGallery("all");
     } else {
       console.warn("No gallery images found in Supabase database.");
+      initGallery("all"); // renders empty state gracefully
     }
   } catch (err) {
-    console.error("Error fetching from Supabase:", err);
+    console.error("Error fetching gallery from Supabase:", err);
+    initGallery("all"); // attempt to render with whatever data is available
   }
 
   renderPackages(activeCategory);
   renderExtras();
 });
+
