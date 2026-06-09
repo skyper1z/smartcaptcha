@@ -25,15 +25,18 @@ const extras = [
   ["Express service within 5 working days", "GHS 4,000"],
   ["Professional makeup", "GHS 250–GHS 700"],
   ["Extra edited photo", "GHS 50 each"],
-  ["Birthday reel only", "GHS 300–GHS 800"],
-  ["Framed portrait", "GHS 150–GHS 900"],
-  ["Printed photobook", "GHS 500–GHS 2,000"],
+  ["Birthday Reel", "GHS 500–GHS 1,500"],
+  ["Framed Portrait", "GHS 250–GHS 800"],
+  ["Photo Album", "GHS 500–GHS 2,000"],
   ["Extra outfit change", "GHS 150"],
   ["Same-day delivery", "+30% of package price"],
   ["Adult kente traditional props", "GHS 700"],
   ["Adult props with makeup and 4 retouched pictures", "GHS 1,000"],
   ["Child kente traditional props", "GHS 400"],
-  ["Child props with makeup and 3 retouched pictures", "GHS 800"]
+  ["Child props with makeup and 3 retouched pictures", "GHS 800"],
+  ["Cake Smash Setup Assistance", "GHS 300–GHS 800"],
+  ["Extended Family Portraits", "GHS 300"],
+  ["Child Styling & Makeup (where applicable)", "GHS 200–GHS 500"]
 ];
 
 // ─── EVENT DEFINITIONS ──────────────────────────────────────────────────────
