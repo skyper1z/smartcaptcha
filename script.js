@@ -265,8 +265,14 @@ function setPortraitFilter(filterKey) {
 
 function updateBirthdayFilterVisibility() {
   if (!birthdayLocationRow) return;
-  birthdayLocationRow.classList.add("hidden");
-  activeBirthdayLocation = "In-studio";
+  const isBirthdaySelected = activePortraitFilter === "birthday";
+  if (isBirthdaySelected) {
+    birthdayLocationRow.classList.remove("hidden");
+    renderBirthdayLocationFilters();
+  } else {
+    birthdayLocationRow.classList.add("hidden");
+    activeBirthdayLocation = "In-studio";
+  }
 }
 
 function renderBirthdayLocationFilters() {
@@ -337,6 +343,9 @@ function renderPackages(category) {
     if (!filterInfo) return;
     const portraitPackages = Array.isArray(packages.portrait) ? packages.portrait : [];
     let filteredItems = portraitPackages.filter((item) => item && item.category === filterInfo.category);
+    if (activePortraitFilter === "birthday") {
+      filteredItems = filteredItems.filter((item) => item.location === activeBirthdayLocation);
+    }
     packageGrid.innerHTML = filteredItems.length
       ? `<div class="package-carousel">${filteredItems.map(renderPackageCard).join("")}</div>`
       : `<div class="empty-state">No ${filterInfo.label} packages available yet.</div>`;
