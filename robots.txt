@@ -1,0 +1,8 @@
+# Smart Captcha Studios GH — robots.txt
+# Allow all search engine crawlers
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+
+Sitemap: https://smartcaptcha.vercel.app/sitemap.xml

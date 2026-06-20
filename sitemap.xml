@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+
+  <!-- Main website -->
+  <url>
+    <loc>https://smartcaptcha.vercel.app/</loc>
+    <lastmod>2026-06-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://smartcaptcha.vercel.app/assets/photos/wedding-party.jpg</image:loc>
+      <image:title>Smart Captcha Studios GH — Wedding Photography Ghana</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://smartcaptcha.vercel.app/assets/photos/wedding-couple.jpg</image:loc>
+      <image:title>Smart Captcha Studios GH — Wedding Couple Photography</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://smartcaptcha.vercel.app/assets/photos/studio-portrait.jpg</image:loc>
+      <image:title>Smart Captcha Studios GH — Studio Portrait Photography Ghana</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://smartcaptcha.vercel.app/assets/photos/traditional-props.jpg</image:loc>
+      <image:title>Smart Captcha Studios GH — Traditional Kente Props Photography Ghana</image:title>
+    </image:image>
+    <image:image>
+      <image:loc>https://smartcaptcha.vercel.app/assets/photos/funeral-service.jpg</image:loc>
+      <image:title>Smart Captcha Studios GH — Funeral Coverage Photography Ghana</image:title>
+    </image:image>
+  </url>
+
+</urlset>
