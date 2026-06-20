@@ -169,10 +169,44 @@ const portraitFilters = [
   }
 ];
 
+// ─── DEEP LINK URL BUILDER ───────────────────────────────────────────────────
+// Builds a URL that, when opened, restores the exact package view the sender
+// was looking at. Included in every WhatsApp booking message so the recipient
+// can tap the link and land on the right package immediately.
+function buildDeepLinkUrl(item) {
+  const base = window.location.origin + window.location.pathname;
+  const params = new URLSearchParams();
+  const tone = item.tone || '';
+
+  if (tone === 'portrait') {
+    params.set('cat', 'portrait');
+    const pf = portraitFilters.find(f => f.category === item.category);
+    if (pf) {
+      params.set('pf', pf.key);
+      if (pf.key === 'birthday' && item.location) {
+        params.set('loc', item.location);
+      }
+    }
+  } else if (tone === 'streaming') {
+    params.set('cat', 'streaming');
+  } else {
+    // Event tones (wedding, funeral, naming, corporate, concert, others, …)
+    params.set('cat', 'events');
+    params.set('event', tone);
+    if (item.tab) params.set('tab', item.tab);
+  }
+
+  if (item.title) params.set('pkg', item.title);
+
+  return `${base}?${params.toString()}#packages`;
+}
+
 // ─── CARD RENDERER ───────────────────────────────────────────────────────────
 function renderPackageCard(item) {
   const bullets = Array.isArray(item.bullets) ? item.bullets : [];
   const tags = Array.isArray(item.tags) ? item.tags : [];
+  const deepLink = buildDeepLinkUrl(item);
+  const waMessage = `Hello Smart Captcha, I want to book the ${item.title || ''} package (${item.price || ''}).\n\nView package: ${deepLink}`;
   return `
     <article class="package-card${item.featured ? " featured" : ""}">
       <div class="package-body">
@@ -187,7 +221,7 @@ function renderPackageCard(item) {
         <div class="price">${item.price || ""}</div>
         <ul>${bullets.map((bullet) => `<li>${bullet}</li>`).join("")}</ul>
         <div class="tag-row">${tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
-        <a class="button card-cta" href="https://wa.me/233244101740?text=Hello%20Smart%20Captcha%2C%20I%20want%20to%20book%20the%20${encodeURIComponent(item.title || "")}%20package%20(${encodeURIComponent(item.price || "")}).">
+        <a class="button card-cta" href="https://wa.me/233244101740?text=${encodeURIComponent(waMessage)}">
           <span>Book package</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon-right"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         </a>
@@ -294,6 +328,50 @@ function renderBirthdayLocationFilters() {
       renderPackages("portrait");
     });
   });
+}
+
+// ─── DEEP LINK PARAMS READER ─────────────────────────────────────────────────
+// Reads URL query params produced by buildDeepLinkUrl() and restores the
+// correct category/event/tab/portrait-filter state so the recipient of the
+// WhatsApp link lands on exactly the right package view.
+function applyDeepLinkParams() {
+  const params = new URLSearchParams(window.location.search);
+  const cat = params.get('cat');
+  if (!cat) return false;
+
+  if (cat === 'events') {
+    activeCategory = 'events';
+    const eventKey = params.get('event');
+    if (eventKey && eventTypes.some(e => e.key === eventKey)) {
+      activeEvent = eventKey;
+      const eventDef = eventTypes.find(e => e.key === eventKey);
+      const tabParam = params.get('tab');
+      activeEventTab = (tabParam && eventDef && eventDef.tabs.includes(tabParam))
+        ? tabParam
+        : (eventDef && eventDef.tabs[0] ? eventDef.tabs[0] : '');
+    }
+  } else if (cat === 'portrait') {
+    activeCategory = 'portrait';
+    const pfKey = params.get('pf');
+    if (pfKey && portraitFilters.some(f => f.key === pfKey)) {
+      activePortraitFilter = pfKey;
+      if (pfKey === 'birthday') {
+        const loc = params.get('loc');
+        if (loc) activeBirthdayLocation = loc;
+      }
+    }
+  } else if (cat === 'streaming') {
+    activeCategory = 'streaming';
+  }
+
+  // Sync the main tab buttons to match restored category
+  packageTabs.forEach(tab => {
+    const isActive = tab.dataset.filter === activeCategory;
+    tab.classList.toggle('active', isActive);
+    tab.setAttribute('aria-selected', String(isActive));
+  });
+
+  return true;
 }
 
 // ─── VISIBILITY HELPERS ──────────────────────────────────────────────────────
@@ -644,7 +722,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     initGallery("all"); // attempt to render with whatever data is available
   }
 
-  renderPackages(activeCategory);
-  renderExtras();
+  // ── Apply deep-link params AFTER event types are loaded from DB ──────────
+  // This ensures event type keys from the database are valid before we try
+  // to match the URL param. Re-render everything so the correct view shows.
+  const wasDeepLink = applyDeepLinkParams();
+  if (wasDeepLink) {
+    updateEventFilterVisibility();
+    updatePortraitFilterVisibility();
+    renderPackages(activeCategory);
+    // Scroll smoothly to the packages section
+    setTimeout(() => {
+      const pkgSection = document.getElementById('packages');
+      if (pkgSection) pkgSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
+  } else {
+    renderPackages(activeCategory);
+    renderExtras();
+  }
 });
 
