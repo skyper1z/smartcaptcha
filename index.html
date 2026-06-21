@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GH">
 
 <head>
   <!-- Google tag (gtag.js) -->
@@ -169,7 +169,77 @@
     rel="stylesheet">
   <link rel="stylesheet" href="style.css?v=19">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <!-- LCP performance: preload the above-the-fold hero image -->
+  <link rel="preload" as="image" href="assets/photos/wedding-party.jpg" fetchpriority="high">
+
+  <!-- Favicons & mobile icons -->
   <link rel="icon" href="assets/logo.jpg" type="image/jpeg">
+  <link rel="apple-touch-icon" href="assets/logo.jpg">
+  <meta name="theme-color" content="#00f5d4">
+
+  <!-- WebSite schema: enables sitelinks search box in Google results -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": "https://smartcaptchagh.com/#website",
+    "url": "https://smartcaptchagh.com/",
+    "name": "Smart Captcha Studios GH",
+    "description": "Professional photography, videography, live streaming and drone coverage in Ghana.",
+    "publisher": { "@id": "https://smartcaptchagh.com/#business" }
+  }
+  </script>
+
+  <!-- FAQPage schema: targets featured snippets for common search questions -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How much does wedding photography cost in Ghana?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Smart Captcha Studios GH offers wedding photography and videography packages starting from GHS 6,500 for a single-day ceremony up to GHS 13,000 for full multi-day traditional and white wedding coverage."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much does live streaming cost in Ghana?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Smart Captcha Studios GH provides professional live event streaming from GHS 4,000, covering weddings, funerals, naming ceremonies, and corporate events across Ghana."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How much is a studio photoshoot in Ghana?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Studio portrait photography at Smart Captcha Studios GH starts from GHS 200. Packages include birthday shoots, kente traditional shoots, bump shoots, and general portraits."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Does Smart Captcha Studios offer drone coverage in Ghana?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Smart Captcha Studios GH provides professional aerial drone photography and videography coverage for weddings and events across Ghana for GHS 2,500."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I book Smart Captcha Studios?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "You can book Smart Captcha Studios GH directly via WhatsApp at +233 244 101 740 or through the website at smartcaptchagh.com. A 50% deposit is required to secure your booking date."
+        }
+      }
+    ]
+  }
+  </script>
+
 </head>
 
 <body>
@@ -177,7 +247,7 @@
     <a class="brand" href="#top" aria-label="Smart Captcha home">
       <div class="brand-mark"
         style="overflow: hidden; display: flex; align-items: center; justify-content: center; background: none; box-shadow: none;">
-        <img src="assets/logo.jpg" alt="Smart Captcha Studios Logo"
+        <img src="assets/logo.jpg" alt="Smart Captcha Studios GH logo" loading="lazy"
           style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
       </div>
       <span>
@@ -208,8 +278,8 @@
       </div>
       <div class="hero-copy">
         <p class="eyebrow">2025 rate card</p>
-        <h1 id="hero-title">We are SMART CAPTCHA STUDIOS!</h1>
-        <p class="hero-lede">Standard photography, High-quality Videography, and Professional Live streaming.</p>
+        <h1 id="hero-title">Professional Photography &amp; Videography in Ghana</h1>
+        <p class="hero-lede">Wedding coverage, live streaming, drone photography, portraits and more — across Ghana. View our 2025/2026 rates and book on WhatsApp today.</p>
         <div class="hero-actions">
           <a class="button primary" href="#packages">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -486,6 +556,12 @@
       <a href="https://www.instagram.com/smartcaptcha/">@smartcaptcha</a>
     </span>
   </footer>
+
+  <!-- NAP (Name / Address / Phone) — consistent with JSON-LD, reinforces local SEO -->
+  <address style="display:none" aria-hidden="true">
+    Smart Captcha Studios GH, Accra, Greater Accra, Ghana.
+    Tel: +233244101740
+  </address>
 
   <!-- Lightbox Modal -->
   <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog">
