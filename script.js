@@ -741,3 +741,88 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+// ─── ANNOUNCEMENT POP-UP ─────────────────────────────────────────────────────
+// Checks Supabase for an active announcement and shows it once per session.
+
+async function checkAndShowAnnouncement() {
+  // Only show once per browser session
+  if (sessionStorage.getItem('sc_ann_shown')) return;
+
+  try {
+    const { data, error } = await window.supabaseClient
+      .from('site_announcements')
+      .select('*')
+      .eq('enabled', true)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) return;
+
+    // Mark as shown for this session
+    sessionStorage.setItem('sc_ann_shown', '1');
+
+    showAnnouncementPopup(data);
+  } catch (err) {
+    console.warn('Announcement check failed:', err);
+  }
+}
+
+function showAnnouncementPopup(data) {
+  const existing = document.getElementById('sc-announcement-overlay');
+  if (existing) existing.remove();
+
+  const overlay = document.createElement('div');
+  overlay.id = 'sc-announcement-overlay';
+  overlay.innerHTML = `
+    <div class="sc-ann-modal" role="dialog" aria-modal="true" aria-labelledby="sc-ann-title">
+      <button class="sc-ann-close" id="sc-ann-close-btn" aria-label="Close announcement">&times;</button>
+      ${data.badge ? `<div class="sc-ann-badge">${data.badge}</div>` : ''}
+      ${data.title ? `<h2 class="sc-ann-title" id="sc-ann-title">${data.title}</h2>` : ''}
+      ${data.body ? `<p class="sc-ann-body">${data.body.replace(/\n/g, '<br>')}</p>` : ''}
+      ${data.promo_code ? `
+        <div class="sc-ann-code-wrap">
+          <span class="sc-ann-code-label">Your promo code</span>
+          <div class="sc-ann-code">${data.promo_code}</div>
+          <button class="sc-ann-copy-btn" id="sc-ann-copy-btn">Copy Code</button>
+        </div>
+      ` : ''}
+      ${(data.cta_text && data.cta_link) ? `
+        <a href="${data.cta_link}" target="_blank" rel="noopener noreferrer" class="sc-ann-cta-btn">${data.cta_text}</a>
+      ` : ''}
+      <button class="sc-ann-dismiss-btn" id="sc-ann-dismiss-btn">Maybe later</button>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => overlay.classList.add('sc-ann-visible'));
+
+  const close = () => {
+    overlay.classList.remove('sc-ann-visible');
+    setTimeout(() => overlay.remove(), 380);
+  };
+
+  document.getElementById('sc-ann-close-btn').addEventListener('click', close);
+  document.getElementById('sc-ann-dismiss-btn').addEventListener('click', close);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+
+  const copyBtn = document.getElementById('sc-ann-copy-btn');
+  if (copyBtn && data.promo_code) {
+    copyBtn.addEventListener('click', () => {
+      navigator.clipboard.writeText(data.promo_code).then(() => {
+        copyBtn.textContent = '✓ Copied!';
+        setTimeout(() => copyBtn.textContent = 'Copy Code', 1800);
+      }).catch(() => {});
+    });
+  }
+
+  const onKeydown = (e) => {
+    if (e.key === 'Escape') { close(); document.removeEventListener('keydown', onKeydown); }
+  };
+  document.addEventListener('keydown', onKeydown);
+}
+
+// Show announcement 1.2 s after page loads — enough time for the page to render
+setTimeout(() => {
+  if (window.supabaseClient) checkAndShowAnnouncement();
+}, 1200);
