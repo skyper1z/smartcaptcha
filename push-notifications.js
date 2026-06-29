@@ -63,11 +63,13 @@ function isSecureContext() {
 
 /** Guards: confirm browser supports required APIs */
 function isPushSupported() {
-  return (
-    'serviceWorker' in navigator &&
-    'PushManager' in window &&
-    'Notification' in window
-  );
+  const sw   = 'serviceWorker' in navigator;
+  const push = 'PushManager' in window;
+  const notif = 'Notification' in window;
+  if (!sw)   console.log('[Push] serviceWorker not supported in this browser.');
+  if (!push) console.log('[Push] PushManager not supported (iOS < 16.4, or non-HTTPS).');
+  if (!notif) console.log('[Push] Notification API not supported.');
+  return sw && push && notif;
 }
 
 // ─── SUPABASE HELPERS ─────────────────────────────────────────────────────────
@@ -93,10 +95,17 @@ async function saveSubscriptionToSupabase(subscription) {
   try {
     const { error } = await window.supabaseClient
       .from(PUSH_CONFIG.table)
-      .upsert([payload], { onConflict: 'endpoint' });
+      .insert([payload]);
 
     if (error) {
-      console.error('[Push] Failed to save subscription:', error.message);
+      // code 23505 = unique_violation (endpoint already stored) — treat as success
+      if (error.code === '23505') {
+        console.log('[Push] Subscription already stored — updating localStorage.');
+        localStorage.setItem(PUSH_CONFIG.keys.subscribed, '1');
+        localStorage.setItem(PUSH_CONFIG.keys.endpoint, subscription.endpoint);
+        return true;
+      }
+      console.error('[Push] Failed to save subscription:', error.message, error.code);
       return false;
     }
 
