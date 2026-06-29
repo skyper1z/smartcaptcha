@@ -22,8 +22,12 @@ const PUSH_CONFIG = {
   /** VAPID public key — must match sw.js and the Edge Function secret */
   vapidPublicKey: 'BL1BleY3VRK-3t8Bv1EoBGeywsUA40bskUcGxMB2Ug8cEZX-8uHaqOjPGyX5Yy1hRT-NIrXwkxR-RtAY1pIN3sY',
 
-  /** How long (ms) after page load before showing the permission card */
-  promptDelayMs: 5000,
+  /**
+   * How long (ms) after page load before showing the permission card.
+   * Set to 12s so it doesn't overlap with the install prompt card (4s).
+   * If the install card was dismissed sooner, we still wait for this delay.
+   */
+  promptDelayMs: 12000,
 
   /** localStorage keys */
   keys: {
