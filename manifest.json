@@ -1,0 +1,17 @@
+{
+  "name": "Smart Captcha Studios GH",
+  "short_name": "SmartCaptcha",
+  "description": "Professional photography, videography, live streaming and drone coverage in Ghana.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "/assets/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
