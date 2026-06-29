@@ -54,6 +54,19 @@ function isIOSSafari() {
   return isIOS() && /Safari/.test(navigator.userAgent) && !/CriOS|FxiOS|OPiOS/.test(navigator.userAgent);
 }
 
+/**
+ * Returns the major iOS version number (e.g. 17, 26), or null if not iOS.
+ * iOS 26 = the 2026 redesign with Liquid Glass & three-dot share menu.
+ */
+function getIOSVersion() {
+  // Standard UA: "OS 17_0" or "OS 26_0"
+  const match = navigator.userAgent.match(/OS (\d+)[_.](\d+)/);
+  if (match) return parseInt(match[1], 10);
+  // iPad on iOS 13+ may report as Macintosh — version unknown, assume modern
+  if (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1) return 17;
+  return null;
+}
+
 // ─── STYLES ──────────────────────────────────────────────────────────────────
 
 function injectInstallStyles() {
@@ -263,7 +276,7 @@ function injectInstallStyles() {
       margin: 8px 0 0;
     }
 
-    /* Bouncing arrow pointing down to the share button */
+    /* Bouncing arrow — downward (iOS < 26: share button at the bottom) */
     .sc-ios-arrow {
       margin-top: 18px;
       display: flex;
@@ -285,9 +298,52 @@ function injectInstallStyles() {
       border-right: 9px solid transparent;
       border-top: 12px solid #63b3ed;
     }
+
+    /* iOS 26+: layout flips — arrow points UP to the top-right ··· menu */
+    #sc-ios-overlay.sc-ios-top {
+      justify-content: flex-start;
+      padding-top: 80px;
+      padding-bottom: 0;
+    }
+    #sc-ios-overlay.sc-ios-top .sc-ios-arrow {
+      order: -1;
+      margin-top: 0;
+      margin-bottom: 16px;
+      flex-direction: column-reverse;
+      animation: sc-bounce-up 1.2s ease-in-out infinite;
+      /* shift right so arrow aligns with top-right ··· button */
+      align-self: flex-end;
+      margin-right: 28px;
+    }
+    #sc-ios-overlay.sc-ios-top .sc-ios-arrow-shaft {
+      background: linear-gradient(to top, rgba(99,179,237,0), #63b3ed);
+    }
+    #sc-ios-overlay.sc-ios-top .sc-ios-arrow-head {
+      border-top: none;
+      border-bottom: 12px solid #63b3ed;
+      order: -1;
+    }
+
+    /* Bonus note for iOS 26 */
+    .sc-ios-bonus {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.78rem;
+      color: #34d399;
+      background: rgba(52,211,153,0.08);
+      border: 1px solid rgba(52,211,153,0.18);
+      border-radius: 8px;
+      padding: 6px 10px;
+      margin: 8px 0 0;
+      line-height: 1.4;
+    }
+
     @keyframes sc-bounce {
       0%, 100% { transform: translateY(0); }
       50%       { transform: translateY(10px); }
+    }
+    @keyframes sc-bounce-up {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
     }
   `;
   document.head.appendChild(style);
@@ -297,23 +353,56 @@ function injectInstallStyles() {
 
 /**
  * Shows a full-screen dark overlay with an animated arrow pointing to
- * the Safari share button. Tap anywhere to dismiss.
+ * the correct Safari control for the user's iOS version:
+ *
+ *   iOS < 26  → Share button (↑ upload icon) at the BOTTOM — arrow points ↓
+ *   iOS 26+   → Three-dot (···) button at the TOP RIGHT — arrow points ↑
  */
 function showIOSOverlay() {
+  const version = getIOSVersion();
+  const isIOS26 = version !== null && version >= 26;
+
+  // ── Version-specific icon ───────────────────────────────────────────────
+  const iconHTML = isIOS26
+    // ··· ellipsis — matches the iOS 26 Safari top-right menu button
+    ? `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="10" viewBox="0 0 24 8" fill="#63b3ed">
+        <circle cx="3"  cy="4" r="2.5"/>
+        <circle cx="12" cy="4" r="2.5"/>
+        <circle cx="21" cy="4" r="2.5"/>
+       </svg>`
+    // Classic share/upload arrow — matches the iOS < 26 Safari bottom share button
+    : `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24"
+         fill="none" stroke="#63b3ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+         <polyline points="16 6 12 2 8 6"/>
+         <line x1="12" y1="2" x2="12" y2="15"/>
+       </svg>`;
+
+  // ── Version-specific body text ──────────────────────────────────────────
+  const bodyHTML = isIOS26
+    ? `Tap <strong style="color:#63b3ed;">···</strong> at the <strong style="color:#63b3ed;">top right of Safari</strong>,
+       tap <strong style="color:#63b3ed;">Share</strong>, then
+       <strong style="color:#63b3ed;">"Add to Home Screen"</strong>`
+    : `Tap the <strong style="color:#63b3ed;">Share</strong> button at the
+       <strong style="color:#63b3ed;">bottom of Safari</strong>,
+       then tap <strong style="color:#63b3ed;">"Add to Home Screen"</strong>`;
+
+  // iOS 26 bonus: Apple now opens installed sites as Web Apps by default ✨
+  const bonusHTML = isIOS26
+    ? `<p class="sc-ios-bonus">✨ iOS 26 opens the site as a full app automatically!</p>`
+    : '';
+
   const overlay = document.createElement('div');
   overlay.id = 'sc-ios-overlay';
+  // sc-ios-top flips the layout so the arrow points UP toward the top-right ··· button
+  if (isIOS26) overlay.classList.add('sc-ios-top');
+
   overlay.innerHTML = `
     <div class="sc-ios-message-box">
-      <div class="sc-ios-share-icon">
-        <!-- iOS Share icon (matches the real Safari share button) -->
-        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#63b3ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-          <polyline points="16 6 12 2 8 6"/>
-          <line x1="12" y1="2" x2="12" y2="15"/>
-        </svg>
-      </div>
+      <div class="sc-ios-share-icon">${iconHTML}</div>
       <p class="sc-ios-title">Almost there!</p>
-      <p class="sc-ios-body">Tap the <strong style="color:#63b3ed;">Share</strong> button below,<br>then tap <strong style="color:#63b3ed;">"Add to Home Screen"</strong></p>
+      <p class="sc-ios-body">${bodyHTML}</p>
+      ${bonusHTML}
       <p class="sc-ios-hint">Tap anywhere to dismiss</p>
     </div>
     <div class="sc-ios-arrow">
