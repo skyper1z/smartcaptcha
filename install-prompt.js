@@ -67,11 +67,11 @@ function injectInstallStyles() {
       bottom: 24px;
       left: 50%;
       transform: translateX(-50%) translateY(140px);
-      width: min(420px, calc(100vw - 32px));
+      width: min(400px, calc(100vw - 32px));
       background: linear-gradient(145deg, #1a2540 0%, #0f172a 100%);
       border: 1px solid rgba(99, 179, 237, 0.22);
       border-radius: 22px;
-      padding: 20px 20px 16px;
+      padding: 18px 18px 14px;
       box-shadow:
         0 24px 64px rgba(0,0,0,0.65),
         0 0 0 1px rgba(255,255,255,0.04),
@@ -93,6 +93,17 @@ function injectInstallStyles() {
     #sc-install-card.sc-install-hiding {
       transform: translateX(-50%) translateY(140px);
       opacity: 0;
+    }
+    @media (max-width: 480px) {
+      #sc-install-card {
+        bottom: 12px;
+        left: 16px;
+        right: 16px;
+        transform: translateY(140px);
+        width: auto;
+      }
+      #sc-install-card.sc-install-visible  { transform: translateY(0); }
+      #sc-install-card.sc-install-hiding   { transform: translateY(140px); }
     }
 
     /* Close button */
@@ -123,81 +134,38 @@ function injectInstallStyles() {
       gap: 13px;
     }
     .sc-install-icon-wrap {
-      width: 52px;
-      height: 52px;
-      border-radius: 14px;
+      width: 50px;
+      height: 50px;
+      border-radius: 13px;
       overflow: hidden;
       border: 1px solid rgba(99,179,237,0.2);
       flex-shrink: 0;
       background: #0f172a;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
     .sc-install-icon-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
     .sc-install-title {
       margin: 0 0 3px;
-      font-size: 0.98rem;
+      font-size: 0.96rem;
       font-weight: 700;
       color: #f1f5f9;
       line-height: 1.3;
     }
     .sc-install-subtitle {
       margin: 0;
-      font-size: 0.8rem;
+      font-size: 0.79rem;
       color: #64748b;
       line-height: 1.4;
-    }
-
-    /* iOS steps */
-    .sc-install-steps {
-      background: rgba(99,179,237,0.05);
-      border: 1px solid rgba(99,179,237,0.12);
-      border-radius: 14px;
-      padding: 12px 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-    .sc-install-step {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.84rem;
-      color: #cbd5e1;
-      line-height: 1.4;
-    }
-    .sc-install-step-num {
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      background: rgba(99,179,237,0.15);
-      border: 1px solid rgba(99,179,237,0.25);
-      color: #63b3ed;
-      font-size: 0.72rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-    .sc-install-step-icon {
-      display: inline-flex;
-      align-items: center;
-      background: rgba(99,179,237,0.12);
-      border-radius: 6px;
-      padding: 2px 5px;
-      margin: 0 2px;
     }
 
     /* Action buttons */
     .sc-install-actions {
       display: flex;
-      gap: 10px;
+      gap: 9px;
     }
     .sc-install-btn-primary {
       flex: 1;
@@ -205,8 +173,8 @@ function injectInstallStyles() {
       color: #fff;
       border: none;
       border-radius: 11px;
-      padding: 11px 18px;
-      font-size: 0.9rem;
+      padding: 11px 16px;
+      font-size: 0.88rem;
       font-weight: 700;
       cursor: pointer;
       font-family: inherit;
@@ -215,7 +183,6 @@ function injectInstallStyles() {
       align-items: center;
       justify-content: center;
       gap: 7px;
-      letter-spacing: 0.01em;
     }
     .sc-install-btn-primary:hover { opacity: 0.9; transform: translateY(-1px); }
     .sc-install-btn-primary:active { transform: translateY(0); }
@@ -224,8 +191,8 @@ function injectInstallStyles() {
       color: #64748b;
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 11px;
-      padding: 11px 14px;
-      font-size: 0.83rem;
+      padding: 11px 13px;
+      font-size: 0.82rem;
       font-weight: 500;
       cursor: pointer;
       font-family: inherit;
@@ -234,109 +201,176 @@ function injectInstallStyles() {
     }
     .sc-install-btn-secondary:hover { color: #94a3b8; border-color: rgba(255,255,255,0.18); }
 
-    /* Arrow indicator for iOS */
-    .sc-install-arrow {
+    /* ── iOS full-screen guided overlay ────────────────────────────────── */
+    #sc-ios-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      padding-bottom: 90px;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      cursor: pointer;
+    }
+    #sc-ios-overlay.sc-ios-visible { opacity: 1; }
+
+    .sc-ios-message-box {
+      background: linear-gradient(145deg, #1e293b, #0f172a);
+      border: 1px solid rgba(99,179,237,0.25);
+      border-radius: 20px;
+      padding: 20px 24px;
+      max-width: 320px;
+      width: calc(100% - 48px);
       text-align: center;
-      font-size: 0.78rem;
-      color: #475569;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+      position: relative;
+    }
+    .sc-ios-share-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(99,179,237,0.12);
+      border: 1px solid rgba(99,179,237,0.25);
+      border-radius: 14px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
+      margin: 0 auto 12px;
     }
-    .sc-install-arrow::before,
-    .sc-install-arrow::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: rgba(255,255,255,0.06);
+    .sc-ios-title {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin: 0 0 6px;
+    }
+    .sc-ios-body {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.84rem;
+      color: #94a3b8;
+      margin: 0 0 4px;
+      line-height: 1.5;
+    }
+    .sc-ios-hint {
+      font-family: 'Space Grotesk', system-ui, sans-serif;
+      font-size: 0.75rem;
+      color: #475569;
+      margin: 8px 0 0;
     }
 
-    @media (max-width: 480px) {
-      #sc-install-card {
-        bottom: 12px;
-        left: 16px;
-        right: 16px;
-        transform: translateY(140px);
-        width: auto;
-      }
-      #sc-install-card.sc-install-visible  { transform: translateY(0); }
-      #sc-install-card.sc-install-hiding   { transform: translateY(140px); }
+    /* Bouncing arrow pointing down to the share button */
+    .sc-ios-arrow {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      animation: sc-bounce 1.2s ease-in-out infinite;
+    }
+    .sc-ios-arrow-shaft {
+      width: 2px;
+      height: 36px;
+      background: linear-gradient(to bottom, rgba(99,179,237,0), #63b3ed);
+      border-radius: 2px;
+    }
+    .sc-ios-arrow-head {
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-top: 12px solid #63b3ed;
+    }
+    @keyframes sc-bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(10px); }
     }
   `;
   document.head.appendChild(style);
 }
 
-// ─── CARD BUILDER ────────────────────────────────────────────────────────────
+// ─── iOS OVERLAY ─────────────────────────────────────────────────────────────
 
 /**
- * Builds and returns the install card element.
- * @param {'android'|'ios'} platform
- * @param {BeforeInstallPromptEvent|null} deferredPrompt
+ * Shows a full-screen dark overlay with an animated arrow pointing to
+ * the Safari share button. Tap anywhere to dismiss.
  */
+function showIOSOverlay() {
+  const overlay = document.createElement('div');
+  overlay.id = 'sc-ios-overlay';
+  overlay.innerHTML = `
+    <div class="sc-ios-message-box">
+      <div class="sc-ios-share-icon">
+        <!-- iOS Share icon (matches the real Safari share button) -->
+        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#63b3ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <polyline points="16 6 12 2 8 6"/>
+          <line x1="12" y1="2" x2="12" y2="15"/>
+        </svg>
+      </div>
+      <p class="sc-ios-title">Almost there!</p>
+      <p class="sc-ios-body">Tap the <strong style="color:#63b3ed;">Share</strong> button below,<br>then tap <strong style="color:#63b3ed;">"Add to Home Screen"</strong></p>
+      <p class="sc-ios-hint">Tap anywhere to dismiss</p>
+    </div>
+    <div class="sc-ios-arrow">
+      <div class="sc-ios-arrow-shaft"></div>
+      <div class="sc-ios-arrow-head"></div>
+    </div>
+  `;
+
+  document.body.appendChild(overlay);
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => overlay.classList.add('sc-ios-visible'));
+  });
+
+  const dismiss = () => {
+    overlay.classList.remove('sc-ios-visible');
+    setTimeout(() => overlay.remove(), 320);
+  };
+
+  overlay.addEventListener('click', dismiss);
+}
+
+// ─── CARD BUILDER ────────────────────────────────────────────────────────────
+
 function buildInstallCard(platform, deferredPrompt) {
   const card = document.createElement('div');
   card.id = 'sc-install-card';
   card.setAttribute('role', 'dialog');
   card.setAttribute('aria-label', 'Add to Home Screen');
 
-  const iosSteps = `
-    <div class="sc-install-steps">
-      <div class="sc-install-step">
-        <span class="sc-install-step-num">1</span>
-        <span>Tap the <span class="sc-install-step-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#63b3ed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
-        </span> <strong>Share</strong> button at the bottom of Safari</span>
-      </div>
-      <div class="sc-install-step">
-        <span class="sc-install-step-num">2</span>
-        <span>Scroll down and tap <strong>"Add to Home Screen"</strong></span>
-      </div>
-      <div class="sc-install-step">
-        <span class="sc-install-step-num">3</span>
-        <span>Tap <strong>"Add"</strong> — done! 🎉</span>
-      </div>
-    </div>
-    <div class="sc-install-arrow">Tap the share icon below ↓</div>
-  `;
-
-  const androidContent = `
-    <div class="sc-install-actions">
-      <button class="sc-install-btn-primary" id="sc-install-add-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-        Add to Home Screen
-      </button>
-      <button class="sc-install-btn-secondary" id="sc-install-later-btn">Not now</button>
-    </div>
-  `;
-
-  const iosActions = `
-    <div class="sc-install-actions">
-      <button class="sc-install-btn-secondary" id="sc-install-later-btn" style="flex:1; color:#94a3b8;">Got it, thanks!</button>
-    </div>
-  `;
-
   card.innerHTML = `
     <button class="sc-install-close" id="sc-install-close-btn" aria-label="Close">
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
     </button>
 
     <div class="sc-install-header">
       <div class="sc-install-icon-wrap">
-        <img src="/assets/logo.jpg" alt="Smart Captcha Studios" onerror="this.parentElement.innerHTML='📸'">
+        <img src="/assets/logo.jpg" alt="Smart Captcha Studios">
       </div>
       <div>
         <p class="sc-install-title">📸 Smart Captcha Studios</p>
-        <p class="sc-install-subtitle">
-          ${platform === 'ios'
-            ? 'Add to your Home Screen for quick access & notifications'
-            : 'Install the app for instant access & push notifications'}
-        </p>
+        <p class="sc-install-subtitle">Add to your Home Screen for instant access &amp; notifications</p>
       </div>
     </div>
 
-    ${platform === 'ios' ? iosSteps : ''}
-    ${platform === 'android' ? androidContent : iosActions}
+    <div class="sc-install-actions">
+      <button class="sc-install-btn-primary" id="sc-install-add-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          ${platform === 'ios'
+            ? '<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/>'
+            : '<path d="M12 5v14M5 12h14"/>'}
+        </svg>
+        Add to Home Screen
+      </button>
+      <button class="sc-install-btn-secondary" id="sc-install-later-btn">Not now</button>
+    </div>
   `;
 
   return card;
@@ -345,7 +379,6 @@ function buildInstallCard(platform, deferredPrompt) {
 // ─── SHOW CARD ───────────────────────────────────────────────────────────────
 
 function showInstallCard(platform, deferredPrompt) {
-  // Remove any existing card
   const existing = document.getElementById('sc-install-card');
   if (existing) existing.remove();
 
@@ -353,7 +386,6 @@ function showInstallCard(platform, deferredPrompt) {
   const card = buildInstallCard(platform, deferredPrompt);
   document.body.appendChild(card);
 
-  // Animate in
   requestAnimationFrame(() => {
     requestAnimationFrame(() => card.classList.add('sc-install-visible'));
   });
@@ -363,45 +395,41 @@ function showInstallCard(platform, deferredPrompt) {
     card.classList.remove('sc-install-visible');
     setTimeout(() => card.remove(), 480);
     localStorage.setItem(INSTALL_CONFIG.dismissedKey, '1');
-    // Slightly delay the push notification card so it doesn't overlap
     window._scInstallDismissedAt = Date.now();
   };
 
-  // Close button
   document.getElementById('sc-install-close-btn').addEventListener('click', dismiss);
+  document.getElementById('sc-install-later-btn').addEventListener('click', dismiss);
 
-  // "Not now" / "Got it" button
-  const laterBtn = document.getElementById('sc-install-later-btn');
-  if (laterBtn) laterBtn.addEventListener('click', dismiss);
+  document.getElementById('sc-install-add-btn').addEventListener('click', async () => {
+    if (platform === 'ios') {
+      // Dismiss the card first, then show the overlay guide
+      dismiss();
+      setTimeout(() => showIOSOverlay(), 300);
+      return;
+    }
 
-  // Android "Add to Home Screen" button
-  const addBtn = document.getElementById('sc-install-add-btn');
-  if (addBtn && deferredPrompt) {
-    addBtn.addEventListener('click', async () => {
-      addBtn.textContent = 'Opening…';
-      addBtn.disabled = true;
+    // Android: trigger the native install prompt
+    const addBtn = document.getElementById('sc-install-add-btn');
+    if (!deferredPrompt) { dismiss(); return; }
 
-      try {
-        await deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+    if (addBtn) { addBtn.textContent = 'Opening…'; addBtn.disabled = true; }
 
-        if (outcome === 'accepted') {
-          localStorage.setItem(INSTALL_CONFIG.installedKey, '1');
-          addBtn.textContent = '✓ Added!';
-          setTimeout(dismiss, 1500);
-        } else {
-          // User dismissed native prompt — dismiss our card too
-          dismiss();
-        }
-      } catch (err) {
-        console.warn('[Install] prompt() failed:', err);
+    try {
+      await deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        localStorage.setItem(INSTALL_CONFIG.installedKey, '1');
+        if (addBtn) addBtn.textContent = '✓ Added!';
+        setTimeout(dismiss, 1200);
+      } else {
         dismiss();
       }
-    });
-  }
-
-  // Click outside to dismiss
-  card.addEventListener('click', (e) => { if (e.target === card) dismiss(); });
+    } catch (err) {
+      console.warn('[Install] prompt() failed:', err);
+      dismiss();
+    }
+  });
 }
 
 // ─── INIT ────────────────────────────────────────────────────────────────────
