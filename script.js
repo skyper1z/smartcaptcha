@@ -7,36 +7,60 @@ let packages = window.defaultPackages || {};
 let galleryData = [];
 
 const extras = [
-  ["Event Live Streaming", "GHS 5,500"],
-  ["Retouching per image", "GHS 200"],
-  ["Creative director", "GHS 3,000"],
-  ["Extra photographer", "GHS 2,000"],
-  ["Extra hourly rate", "GHS 1,000"],
-  ["Extra softcopies (100)", "GHS 500"],
-  ["Groom preparation", "GHS 1,500"],
-  ["Photo book A3", "GHS 4,500"],
-  ["Photo book A4", "GHS 3,000"],
-  ["Photo frame A4", "GHS 450"],
-  ["Photo frame A3", "GHS 600"],
-  ["Photo frame A2", "GHS 800"],
-  ["Drone coverage", "GHS 2,500"],
-  ["Thanksgiving / lunch, 5 hours", "GHS 5,000"],
-  ["Same-day edit, 10 to 15 images", "GHS 2,000"],
-  ["Express service within 5 working days", "GHS 4,000"],
-  ["Professional makeup", "GHS 250–GHS 700"],
-  ["Extra edited photo", "GHS 50 each"],
-  ["Birthday Reel", "GHS 500–GHS 1,500"],
-  ["Framed Portrait", "GHS 250–GHS 800"],
-  ["Photo Album", "GHS 500–GHS 2,000"],
-  ["Extra outfit change", "GHS 150"],
-  ["Same-day delivery", "+30% of package price"],
-  ["Adult kente traditional props", "GHS 700"],
-  ["Adult props with makeup and 4 retouched pictures", "GHS 1,000"],
-  ["Child kente traditional props", "GHS 400"],
-  ["Child props with makeup and 3 retouched pictures", "GHS 800"],
-  ["Cake Smash Setup Assistance", "GHS 300–GHS 800"],
-  ["Extended Family Portraits", "GHS 300"],
-  ["Child Styling & Makeup (where applicable)", "GHS 200–GHS 500"]
+  {
+    group: 'Coverage & Staff',
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+    items: [
+      ["Event Live Streaming", "GHS 5,500"],
+      ["Extra photographer", "GHS 2,000"],
+      ["Extra hourly rate", "GHS 1,000"],
+      ["Creative director", "GHS 3,000"],
+      ["Groom preparation", "GHS 1,500"],
+      ["Drone coverage", "GHS 2,500"],
+      ["Thanksgiving / lunch (5 hrs)", "GHS 5,000"],
+    ]
+  },
+  {
+    group: 'Editing & Delivery',
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`,
+    items: [
+      ["Retouching per image", "GHS 200"],
+      ["Extra edited photo", "GHS 50 each"],
+      ["Extra softcopies (100)", "GHS 500"],
+      ["Same-day edit (10–15 images)", "GHS 2,000"],
+      ["Express service (5 working days)", "GHS 4,000"],
+      ["Same-day delivery", "+30% of package"],
+      ["Birthday Reel", "GHS 500–GHS 1,500"],
+    ]
+  },
+  {
+    group: 'Prints & Albums',
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+    items: [
+      ["Photo book A3", "GHS 4,500"],
+      ["Photo book A4", "GHS 3,000"],
+      ["Photo Album", "GHS 500–GHS 2,000"],
+      ["Photo frame A4", "GHS 450"],
+      ["Photo frame A3", "GHS 600"],
+      ["Photo frame A2", "GHS 800"],
+      ["Framed Portrait", "GHS 250–GHS 800"],
+    ]
+  },
+  {
+    group: 'Studio & Props',
+    icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+    items: [
+      ["Professional makeup", "GHS 250–GHS 700"],
+      ["Adult kente traditional props", "GHS 700"],
+      ["Adult props + makeup + 4 retouched", "GHS 1,000"],
+      ["Child kente traditional props", "GHS 400"],
+      ["Child props + makeup + 3 retouched", "GHS 800"],
+      ["Child Styling & Makeup", "GHS 200–GHS 500"],
+      ["Cake Smash Setup Assistance", "GHS 300–GHS 800"],
+      ["Extra outfit change", "GHS 150"],
+      ["Extended Family Portraits", "GHS 300"],
+    ]
+  }
 ];
 
 // ─── EVENT DEFINITIONS ──────────────────────────────────────────────────────
@@ -452,12 +476,45 @@ function renderPackages(category) {
 
 // ─── EXTRAS ──────────────────────────────────────────────────────────────────
 function renderExtras() {
-  extrasList.innerHTML = extras.map(([name, price]) => `
-    <article class="extra-item">
-      <strong>${name}</strong>
-      <span>${price}</span>
-    </article>
-  `).join("");
+  extrasList.innerHTML = extras.map(group => `
+    <div class="extras-group">
+      <div class="extras-group-header" role="button" aria-expanded="false" tabindex="0">
+        <span class="extras-group-icon">${group.icon}</span>
+        <h3 class="extras-group-title">${group.group}</h3>
+        <span class="extras-group-chevron">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
+        </span>
+      </div>
+      <div class="extras-group-content">
+        <ul class="extras-group-list">
+          ${group.items.map(([name, price]) => `
+            <li class="extras-row">
+              <span class="extras-row-name">${name}</span>
+              <span class="extras-row-price">${price}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    </div>
+  `).join('');
+
+  // Add accordion click toggles
+  const headers = extrasList.querySelectorAll('.extras-group-header');
+  headers.forEach(header => {
+    header.addEventListener('click', () => {
+      const group = header.closest('.extras-group');
+      const isExpanded = group.classList.toggle('expanded');
+      header.setAttribute('aria-expanded', isExpanded ? 'true' : 'false');
+    });
+
+    // Support keyboard activation
+    header.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        header.click();
+      }
+    });
+  });
 }
 
 // ─── TAB LISTENERS ───────────────────────────────────────────────────────────
@@ -826,3 +883,167 @@ function showAnnouncementPopup(data) {
 setTimeout(() => {
   if (window.supabaseClient) checkAndShowAnnouncement();
 }, 1200);
+
+// ─── GENERAL PRICES SECTION ──────────────────────────────────────────────────
+(function initGeneralPrices() {
+
+  const ICONS = {
+    photography: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+    videography:  `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>`,
+    full:         `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/><polygon points="19 5 14 8.5 19 12 19 5"/></svg>`,
+    premium:      `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+    signature:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>`,
+  };
+
+  const gpServices = [
+    {
+      category: 'photography', tone: 'portrait', label: 'General Event',
+      title: 'Event Photography', icon: ICONS.photography, featured: false, badge: null,
+      halfDay: { label: 'Half-Day', duration: 'Up to 4 Hours', price: 'GH₵2,000' },
+      fullDay: { label: 'Full-Day', duration: 'Up to 10 Hours', price: 'GH₵3,500' },
+      bullets: ['One professional photographer','Unlimited moments captured','200+ professionally edited photographs','Premium retouching','High-resolution digital delivery','Online gallery'],
+      tags: ['Event Coverage','Photography','Portraits','Group Photos','Premium Editing','Digital Gallery'],
+      waMsg: "Hello Smart Captcha, I'm interested in Event Photography pricing."
+    },
+    {
+      category: 'videography', tone: 'streaming', label: 'General Event',
+      title: 'Event Videography', icon: ICONS.videography, featured: false, badge: null,
+      halfDay: { label: 'Half-Day', duration: 'Up to 4 Hours', price: 'GH₵2,500' },
+      fullDay: { label: 'Full-Day', duration: 'Up to 10 Hours', price: 'GH₵4,500' },
+      bullets: ['One professional videographer','Full event documentary','3–5 min cinematic highlight film','Professional colour grading','Audio mastering','High-resolution delivery'],
+      tags: ['Event Videography','Documentary','Highlight Video','Colour Grading','Cinematic'],
+      waMsg: "Hello Smart Captcha, I'm interested in Event Videography pricing."
+    },
+    {
+      category: 'full-coverage', tone: 'corporate', label: 'General Event',
+      title: 'Full Coverage', icon: ICONS.full, featured: true, badge: 'Popular',
+      halfDay: { label: 'Half-Day', duration: 'Up to 4 Hours', price: 'GH₵4,500' },
+      fullDay: { label: 'Full-Day', duration: 'Up to 10 Hours', price: 'GH₵7,000' },
+      bullets: ['One photographer + One videographer','200+ edited photographs','Full event documentary','3–5 min cinematic highlight film','Premium editing & high-res delivery','Online gallery'],
+      tags: ['Photography','Videography','Event Coverage','Highlight Film','Digital Gallery'],
+      waMsg: "Hello Smart Captcha, I'm interested in Full Coverage pricing."
+    },
+    {
+      category: 'premium', tone: 'wedding', label: 'Premium Package',
+      title: 'Photography Premium', icon: ICONS.premium, featured: false, badge: 'Premium',
+      singlePrice: { price: 'GH₵5,000', note: 'Full-Day Rate' },
+      bullets: ['Two photographers','350+ edited photographs','Premium retouching','Online gallery','One framed portrait'],
+      tags: ['Premium','Photography','Two Photographers','Framed Portrait'],
+      waMsg: "Hello Smart Captcha, I'm interested in the Photography Premium package."
+    },
+    {
+      category: 'premium', tone: 'concert', label: 'Premium Package',
+      title: 'Videography Premium', icon: ICONS.videography, featured: false, badge: 'Premium',
+      singlePrice: { price: 'GH₵6,000', note: 'Full-Day Rate' },
+      bullets: ['Two videographers','Multi-camera coverage','Full documentary','5–7 min cinematic highlight film','Social media teaser'],
+      tags: ['Premium','Videography','Multi-Camera','Cinematic'],
+      waMsg: "Hello Smart Captcha, I'm interested in the Videography Premium package."
+    },
+    {
+      category: 'premium', tone: 'funeral', label: 'Our Finest Offering',
+      title: 'Signature Full Coverage', icon: ICONS.signature, featured: false, badge: 'Signature',
+      singlePrice: { price: 'GH₵10,000', note: 'Up to 10 Hours' },
+      bullets: ['Two photographers + Two videographers','350+ professionally edited photographs','Full event documentary','5–7 min cinematic highlight film','Same-day social media highlights','Online gallery','Premium photobook (20 pages)','One framed portrait'],
+      tags: ['Photography','Videography','Multi-Camera','Premium Editing','Highlight Film','Documentary'],
+      waMsg: "Hello Smart Captcha, I'm interested in the Signature Full Coverage package."
+    }
+  ];
+
+  const gpFilters = [
+    { key: 'all',           label: 'All Services', icon: ICONS.premium },
+    { key: 'photography',   label: 'Photography',  icon: ICONS.photography },
+    { key: 'videography',   label: 'Videography',  icon: ICONS.videography },
+    { key: 'full-coverage', label: 'Full Coverage',icon: ICONS.full },
+    { key: 'premium',       label: 'Premium',      icon: ICONS.signature },
+  ];
+
+  function badgeCls(badge) {
+    if (badge === 'Signature') return 'gp-badge--signature';
+    if (badge === 'Premium')   return 'gp-badge--gold';
+    return 'gp-badge--teal';
+  }
+
+  function renderCard(svc) {
+    let priceBlock = '';
+    if (svc.halfDay) {
+      priceBlock = `
+        <div class="gp-tier-row">
+          <div class="gp-tier">
+            <span class="gp-tier-badge">${svc.halfDay.label}</span>
+            <span class="gp-tier-duration">${svc.halfDay.duration}</span>
+            <div class="price gp-tier-price">${svc.halfDay.price}</div>
+            <div class="gp-price-note">Starting from</div>
+          </div>
+          <div class="gp-tier-divider"></div>
+          <div class="gp-tier gp-tier--right">
+            <span class="gp-tier-badge gp-tier-badge--gold">${svc.fullDay.label}</span>
+            <span class="gp-tier-duration">${svc.fullDay.duration}</span>
+            <div class="price gp-tier-price gp-price--gold">${svc.fullDay.price}</div>
+            <div class="gp-price-note">Starting from</div>
+          </div>
+        </div>`;
+    } else {
+      const cls = svc.badge === 'Signature' ? 'gp-price-gradient' : svc.badge === 'Premium' ? 'gp-price--gold' : '';
+      priceBlock = `<div class="price ${cls}" style="margin-bottom:0.4rem">${svc.singlePrice.price}</div><div class="gp-price-note" style="margin-bottom:0.75rem">${svc.singlePrice.note}</div>`;
+    }
+
+    const bullets = svc.bullets.map(b => `<li>${b}</li>`).join('');
+    const tags    = svc.tags.map(t => `<span>${t}</span>`).join('');
+    const waUrl   = `https://wa.me/233244101740?text=${encodeURIComponent(svc.waMsg)}`;
+
+    return `
+      <article class="package-card${svc.featured ? ' featured' : ''}" data-gp-category="${svc.category}">
+        <div class="package-body">
+          <div class="package-topline">
+            <span class="package-category">${svc.label}</span>
+            ${svc.badge ? `<span class="mini-label ${badgeCls(svc.badge)}">${svc.badge}</span>` : ''}
+          </div>
+          <div class="package-visual ${svc.tone} gp-visual-icon" aria-hidden="true">
+            <div class="gp-icon-wrap">${svc.icon}</div>
+            <span>${svc.title.split(' ').slice(0,2).join(' ')}</span>
+          </div>
+          <h3>${svc.title}</h3>
+          ${priceBlock}
+          <ul>${bullets}</ul>
+          <div class="tag-row">${tags}</div>
+          <a class="button card-cta${svc.featured ? ' gp-cta-featured' : ''}" href="${waUrl}" target="_blank" rel="noopener noreferrer">
+            <span>Enquire on WhatsApp</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon-right"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          </a>
+        </div>
+      </article>`;
+  }
+
+  const tabBar   = document.getElementById('gp-tab-bar');
+  const carousel = document.getElementById('gp-carousel');
+  if (!tabBar || !carousel) return;
+
+  let activeFilter = 'all';
+
+  function renderTabs() {
+    tabBar.innerHTML = gpFilters.map(f => `
+      <button class="gp-tab${f.key === activeFilter ? ' active' : ''}" data-gp-filter="${f.key}"
+        role="tab" aria-selected="${f.key === activeFilter}">
+        <span class="gp-tab-icon">${f.icon}</span>
+        <span>${f.label}</span>
+      </button>`).join('');
+
+    tabBar.querySelectorAll('.gp-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        activeFilter = btn.dataset.gpFilter;
+        renderTabs();
+        renderCards();
+      });
+    });
+  }
+
+  function renderCards() {
+    const list = activeFilter === 'all'
+      ? gpServices
+      : gpServices.filter(s => s.category === activeFilter);
+    carousel.innerHTML = list.map(renderCard).join('');
+  }
+
+  renderTabs();
+  renderCards();
+})();

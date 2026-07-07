@@ -167,7 +167,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="style.css?v=19">
+  <link rel="stylesheet" href="style.css?v=23">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   <!-- LCP performance: preload the above-the-fold hero image -->
   <link rel="preload" as="image" href="assets/photos/wedding-party.jpg" fetchpriority="high">
@@ -259,6 +259,7 @@
     </a>
     <nav class="nav-links" aria-label="Primary navigation">
       <a href="#packages">Rates</a>
+      <a href="#general-prices">Prices</a>
       <a href="#extras">Extras</a>
       <a href="#terms">Terms</a>
     </nav>
@@ -291,14 +292,23 @@
             </svg>
             <span>View Packages</span>
           </a>
-          <a class="button secondary"
-            href="https://wa.me/233244101740?text=Hello%20Smart%20Captcha%2C%20I%20want%20to%20make%20an%20enquiry.">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"
-              class="btn-icon">
-              <path
-                d="M12.004 2C6.48 2 2 6.48 2 12.004c0 1.764.46 3.42 1.268 4.877L2 22l5.253-1.378a9.962 9.962 0 0 0 4.75 1.206c5.523 0 10.003-4.479 10.003-10.004c0-5.525-4.48-10.004-10.003-10.004zm5.074 13.916c-.208.585-1.036 1.135-1.503 1.202c-.467.067-.933.109-2.935-.717c-2.399-.991-3.905-3.414-4.022-3.572c-.117-.158-.962-1.278-.962-2.439c0-1.16.609-1.731.826-1.961c.216-.23.473-.288.63-.288c.158 0 .317.001.455.008c.145.007.34-.027.531.428c.208.497.712 1.738.775 1.868c.063.13.104.28.017.454c-.087.174-.131.28-.261.431c-.13.151-.273.336-.39.45c-.13.13-.267.272-.115.531c.152.26.674 1.112 1.442 1.797c.99.882 1.822 1.157 2.083 1.288c.261.13.413.109.565-.066c.152-.175.654-.761.826-1.02c.174-.261.348-.218.586-.13c.238.087 1.516.715 1.777.846c.261.13.435.195.498.305c.063.109.063.633-.145 1.218z" />
+          <a class="button secondary" href="#general-prices">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
             </svg>
-            <span>WhatsApp Us</span>
+            <span>General Services</span>
+          </a>
+          <a class="button secondary" href="#gallery">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <span>Gallery</span>
           </a>
         </div>
         <div class="quick-stats" aria-label="Highlights">
@@ -422,6 +432,25 @@
       <div id="birthday-location-filters" class="birthday-location-filters hidden"
         aria-label="Birthday shoot locations"></div>
       <div class="package-grid" data-package-grid></div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════════════
+         GENERAL PRICES SECTION — Smart Captcha Enterprise
+    ════════════════════════════════════════════════════════════════════ -->
+    <section class="section general-prices-section" id="general-prices" aria-labelledby="general-prices-title">
+      <div class="section-heading split">
+        <div>
+          <p class="eyebrow">Smart Captcha Enterprise</p>
+          <h2 id="general-prices-title">General Service Prices</h2>
+        </div>
+        <p class="section-note">Flexible coverage for any event — from intimate gatherings to grand productions.</p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="gp-tabs" role="tablist" aria-label="Price categories" id="gp-tab-bar"></div>
+
+      <!-- Carousel -->
+      <div class="package-carousel gp-carousel" id="gp-carousel" aria-label="General service pricing cards"></div>
     </section>
 
     <section class="section gallery-section" id="gallery" aria-labelledby="gallery-title">
@@ -585,8 +614,8 @@
   </div>
 
   <script src="supabase-client.js"></script>
-  <script src="packages-data.js?v=19"></script>
-  <script src="script.js?v=19"></script>
+  <script src="packages-data.js?v=23"></script>
+  <script src="script.js?v=23"></script>
   <!-- Add to Home Screen install prompt (Android one-tap + iOS guided) -->
   <script src="install-prompt.js?v=1"></script>
   <!-- Web Push Notifications — loads after Supabase client is ready -->
