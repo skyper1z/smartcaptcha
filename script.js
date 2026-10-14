@@ -2,11 +2,21 @@
 let EVENT_TONES = ['wedding', 'funeral', 'naming', 'corporate', 'concert', 'others'];
 let ALL_TONES = ['wedding', 'funeral', 'naming', 'corporate', 'concert', 'others', 'portrait', 'streaming'];
 let packages = window.defaultPackages || {};
+// True once approved prices come from the canonical catalog; the legacy
+// `packages` table is then ignored so the site and assistant never diverge.
+let catalogActive = false;
+
+// Escape text from data sources before inserting it into HTML.
+function esc(value) {
+  return String(value ?? '').replace(/[&<>"']/g, (ch) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]
+  ));
+}
 
 // Gallery Data fallback
 let galleryData = [];
 
-const extras = [
+let extras = [
   {
     group: 'Coverage & Staff',
     icon: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
@@ -235,17 +245,17 @@ function renderPackageCard(item) {
     <article class="package-card${item.featured ? " featured" : ""}">
       <div class="package-body">
         <div class="package-topline">
-          <span class="package-category">${item.category || ""}</span>
+          <span class="package-category">${esc(item.category)}</span>
           ${item.featured ? '<span class="mini-label">Popular</span>' : ""}
         </div>
-        <div class="package-visual ${item.tone || ""}" style="--photo: url('${item.photo || ""}')" aria-hidden="true">
-          <span>${item.title ? item.title.split(" ").slice(0, 2).join(" ") : ""}</span>
+        <div class="package-visual ${esc(item.tone)}" style="--photo: url('${esc(item.photo)}')" aria-hidden="true">
+          <span>${item.title ? esc(item.title.split(" ").slice(0, 2).join(" ")) : ""}</span>
         </div>
-        <h3>${item.title || ""}</h3>
-        <div class="price">${item.price || ""}</div>
-        <ul>${bullets.map((bullet) => `<li>${bullet}</li>`).join("")}</ul>
-        <div class="tag-row">${tags.map((tag) => `<span>${tag}</span>`).join("")}</div>
-        <a class="button card-cta" href="https://wa.me/233244101740?text=${encodeURIComponent(waMessage)}">
+        <h3>${esc(item.title)}</h3>
+        <div class="price">${esc(item.price)}</div>
+        <ul>${bullets.map((bullet) => `<li>${esc(bullet)}</li>`).join("")}</ul>
+        <div class="tag-row">${tags.map((tag) => `<span>${esc(tag)}</span>`).join("")}</div>
+        <a class="button card-cta" href="https://wa.me/233505364860?text=${encodeURIComponent(waMessage)}">
           <span>Book package</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon-right"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
         </a>
@@ -480,7 +490,7 @@ function renderExtras() {
     <div class="extras-group">
       <div class="extras-group-header" role="button" aria-expanded="false" tabindex="0">
         <span class="extras-group-icon">${group.icon}</span>
-        <h3 class="extras-group-title">${group.group}</h3>
+        <h3 class="extras-group-title">${esc(group.group)}</h3>
         <span class="extras-group-chevron">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="6 9 12 15 18 9"/></svg>
         </span>
@@ -489,8 +499,8 @@ function renderExtras() {
         <ul class="extras-group-list">
           ${group.items.map(([name, price]) => `
             <li class="extras-row">
-              <span class="extras-row-name">${name}</span>
-              <span class="extras-row-price">${price}</span>
+              <span class="extras-row-name">${esc(name)}</span>
+              <span class="extras-row-price">${esc(price)}</span>
             </li>
           `).join('')}
         </ul>
@@ -684,6 +694,71 @@ function buildPackagesFromDB(dbPackages) {
 }
 
 
+// ─── CANONICAL CATALOG ───────────────────────────────────────────────────────
+// Builds the site's data from approved catalog rows (same prices the admin
+// portal approves and the WhatsApp assistant quotes).
+
+function buildPackagesFromCatalog(rows) {
+  const built = {};
+  ALL_TONES.forEach(t => built[t] = []);
+  rows.filter(r => r.item_type === 'package').forEach(r => {
+    const group = r.website_group || r.tone;
+    if (!group) return;
+    if (!built[group]) built[group] = [];
+    built[group].push({
+      title: r.title,
+      category: r.category,
+      tab: r.tab || null,
+      location: r.location || null,
+      price: r.display_price,
+      tone: r.tone || group,
+      photo: r.media_path,
+      bullets: Array.isArray(r.inclusions) ? r.inclusions : [],
+      tags: Array.isArray(r.tags) ? r.tags : [],
+      featured: Boolean(r.is_featured),
+      code: r.code
+    });
+  });
+  return built;
+}
+
+function applyCatalogToExtras(rows) {
+  const addons = rows.filter(r => r.item_type === 'addon');
+  const byCode = new Map(addons.map(r => [r.code, r]));
+  const used = new Set();
+  const groups = extras.map(group => ({
+    ...group,
+    items: group.items
+      .map(([name]) => {
+        const row = byCode.get(`addon-${window.SmartcapCatalog.slug(name)}`);
+        if (!row) return null;               // not approved / not offered
+        used.add(row.code);
+        return [row.title, row.display_price];
+      })
+      .filter(Boolean)
+  }));
+  // Add-ons created in the catalog but not on the original site.
+  addons.filter(r => !used.has(r.code)).forEach(r => {
+    let group = groups.find(g => g.group === r.category);
+    if (!group) {
+      group = { group: r.category, icon: groups[0] ? groups[0].icon : '', items: [] };
+      groups.push(group);
+    }
+    group.items.push([r.title, r.display_price]);
+  });
+  extras = groups.filter(g => g.items.length > 0);
+}
+
+async function applyCanonicalCatalog() {
+  const rows = window.SmartcapCatalog ? await window.SmartcapCatalog.load() : null;
+  if (!rows || !rows.some(r => r.item_type === 'package')) return false;
+  catalogActive = true;
+  packages = buildPackagesFromCatalog(rows);
+  applyCatalogToExtras(rows);
+  if (typeof window.__applyCatalogGeneralPrices === 'function') window.__applyCatalogGeneralPrices(rows);
+  return true;
+}
+
 function setupRealtimeSubscriptions() {
   if (!window.supabaseClient) return;
 
@@ -704,6 +779,7 @@ function setupRealtimeSubscriptions() {
   window.supabaseClient
     .channel('public:packages')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'packages' }, async () => {
+      if (catalogActive) return;
       const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
       if (dbPackages && dbPackages.length > 0) {
         packages = buildPackagesFromDB(dbPackages);
@@ -719,9 +795,11 @@ function setupRealtimeSubscriptions() {
     .on('postgres_changes', { event: '*', schema: 'public', table: 'event_types' }, async () => {
       await loadEventTypesFromDB();
       // Refetch packages because EVENT_TONES has updated
-      const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
-      if (dbPackages) {
-        packages = buildPackagesFromDB(dbPackages);
+      if (!catalogActive) {
+        const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
+        if (dbPackages) {
+          packages = buildPackagesFromDB(dbPackages);
+        }
       }
       renderPackages(activeCategory);
       if (activeCategory === "events") updateEventFilterVisibility();
@@ -747,9 +825,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   setupRealtimeSubscriptions();
 
-  // ── Packages fetch (independent) ──────────────────────────────────────────
+  // ── Packages: canonical catalog first, legacy table as fallback ──────────
   try {
-    const { data: dbPackages } = await window.supabaseClient.from('packages').select('*');
+    if (await applyCanonicalCatalog()) {
+      renderPackages(activeCategory);
+      renderExtras();
+      if (activeCategory === "events") updateEventFilterVisibility();
+      if (activeCategory === "portrait") updatePortraitFilterVisibility();
+    }
+  } catch (err) {
+    console.error("Error applying canonical catalog:", err);
+  }
+  try {
+    const { data: dbPackages } = catalogActive
+      ? { data: null }
+      : await window.supabaseClient.from('packages').select('*');
     if (dbPackages && dbPackages.length > 0) {
       packages = buildPackagesFromDB(dbPackages);
       renderPackages(activeCategory);
@@ -895,7 +985,7 @@ setTimeout(() => {
     signature:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>`,
   };
 
-  const gpServices = [
+  let gpServices = [
     {
       category: 'photography', tone: 'portrait', label: 'General Event',
       title: 'Event Photography', icon: ICONS.photography, featured: false, badge: null,
@@ -969,40 +1059,40 @@ setTimeout(() => {
       priceBlock = `
         <div class="gp-tier-row">
           <div class="gp-tier">
-            <span class="gp-tier-badge">${svc.halfDay.label}</span>
-            <span class="gp-tier-duration">${svc.halfDay.duration}</span>
-            <div class="price gp-tier-price">${svc.halfDay.price}</div>
+            <span class="gp-tier-badge">${esc(svc.halfDay.label)}</span>
+            <span class="gp-tier-duration">${esc(svc.halfDay.duration)}</span>
+            <div class="price gp-tier-price">${esc(svc.halfDay.price)}</div>
             <div class="gp-price-note">Starting from</div>
           </div>
           <div class="gp-tier-divider"></div>
           <div class="gp-tier gp-tier--right">
-            <span class="gp-tier-badge gp-tier-badge--gold">${svc.fullDay.label}</span>
-            <span class="gp-tier-duration">${svc.fullDay.duration}</span>
-            <div class="price gp-tier-price gp-price--gold">${svc.fullDay.price}</div>
+            <span class="gp-tier-badge gp-tier-badge--gold">${esc(svc.fullDay.label)}</span>
+            <span class="gp-tier-duration">${esc(svc.fullDay.duration)}</span>
+            <div class="price gp-tier-price gp-price--gold">${esc(svc.fullDay.price)}</div>
             <div class="gp-price-note">Starting from</div>
           </div>
         </div>`;
     } else {
       const cls = svc.badge === 'Signature' ? 'gp-price-gradient' : svc.badge === 'Premium' ? 'gp-price--gold' : '';
-      priceBlock = `<div class="price ${cls}" style="margin-bottom:0.4rem">${svc.singlePrice.price}</div><div class="gp-price-note" style="margin-bottom:0.75rem">${svc.singlePrice.note}</div>`;
+      priceBlock = `<div class="price ${cls}" style="margin-bottom:0.4rem">${esc(svc.singlePrice.price)}</div><div class="gp-price-note" style="margin-bottom:0.75rem">${esc(svc.singlePrice.note)}</div>`;
     }
 
-    const bullets = svc.bullets.map(b => `<li>${b}</li>`).join('');
-    const tags    = svc.tags.map(t => `<span>${t}</span>`).join('');
-    const waUrl   = `https://wa.me/233244101740?text=${encodeURIComponent(svc.waMsg)}`;
+    const bullets = svc.bullets.map(b => `<li>${esc(b)}</li>`).join('');
+    const tags    = svc.tags.map(t => `<span>${esc(t)}</span>`).join('');
+    const waUrl   = `https://wa.me/233505364860?text=${encodeURIComponent(svc.waMsg)}`;
 
     return `
       <article class="package-card${svc.featured ? ' featured' : ''}" data-gp-category="${svc.category}">
         <div class="package-body">
           <div class="package-topline">
-            <span class="package-category">${svc.label}</span>
-            ${svc.badge ? `<span class="mini-label ${badgeCls(svc.badge)}">${svc.badge}</span>` : ''}
+            <span class="package-category">${esc(svc.label)}</span>
+            ${svc.badge ? `<span class="mini-label ${badgeCls(svc.badge)}">${esc(svc.badge)}</span>` : ''}
           </div>
           <div class="package-visual ${svc.tone} gp-visual-icon" aria-hidden="true">
             <div class="gp-icon-wrap">${svc.icon}</div>
-            <span>${svc.title.split(' ').slice(0,2).join(' ')}</span>
+            <span>${esc(svc.title.split(' ').slice(0,2).join(' '))}</span>
           </div>
-          <h3>${svc.title}</h3>
+          <h3>${esc(svc.title)}</h3>
           ${priceBlock}
           <ul>${bullets}</ul>
           <div class="tag-row">${tags}</div>
@@ -1043,6 +1133,37 @@ setTimeout(() => {
       : gpServices.filter(s => s.category === activeFilter);
     carousel.innerHTML = list.map(renderCard).join('');
   }
+
+  // Canonical catalog hook: replace prices, inclusions and tags with the
+  // approved catalog rows (matched by code); drop anything not offered.
+  window.__applyCatalogGeneralPrices = (rows) => {
+    const byCode = new Map(rows.filter(r => r.item_type === 'service').map(r => [r.code, r]));
+    const slug = window.SmartcapCatalog.slug;
+    gpServices = gpServices.map(svc => {
+      const base = slug(svc.title);
+      const pick = (row, fallback) => row ? {
+        bullets: Array.isArray(row.inclusions) && row.inclusions.length ? row.inclusions : fallback.bullets,
+        tags: Array.isArray(row.tags) && row.tags.length ? row.tags : fallback.tags
+      } : {};
+      if (svc.halfDay) {
+        const half = byCode.get(`${base}-half-day`);
+        const full = byCode.get(`${base}-full-day`);
+        if (half && full) {
+          return { ...svc, ...pick(half, svc),
+            halfDay: { ...svc.halfDay, price: half.display_price },
+            fullDay: { ...svc.fullDay, price: full.display_price } };
+        }
+        const only = half || full;
+        if (!only) return null;
+        const tier = half ? svc.halfDay : svc.fullDay;
+        return { ...svc, ...pick(only, svc), halfDay: undefined, fullDay: undefined,
+          singlePrice: { price: only.display_price, note: `${tier.label} · ${tier.duration}` } };
+      }
+      const row = byCode.get(base);
+      return row ? { ...svc, ...pick(row, svc), singlePrice: { ...svc.singlePrice, price: row.display_price } } : null;
+    }).filter(Boolean);
+    renderCards();
+  };
 
   renderTabs();
   renderCards();
