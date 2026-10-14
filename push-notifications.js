@@ -129,10 +129,15 @@ async function saveSubscriptionToSupabase(subscription) {
 async function removeSubscriptionFromSupabase(endpoint) {
   if (!window.supabaseClient || !endpoint) return;
   try {
-    await window.supabaseClient
-      .from(PUSH_CONFIG.table)
-      .delete()
-      .eq('endpoint', endpoint);
+    // Deletes only this browser's own subscription (matched by its endpoint).
+    const { error } = await window.supabaseClient.rpc('push_unsubscribe', { p_endpoint: endpoint });
+    if (error) {
+      // Before the database update is applied, fall back to the old path.
+      await window.supabaseClient
+        .from(PUSH_CONFIG.table)
+        .delete()
+        .eq('endpoint', endpoint);
+    }
     localStorage.removeItem(PUSH_CONFIG.keys.subscribed);
     localStorage.removeItem(PUSH_CONFIG.keys.endpoint);
     console.log('[Push] Subscription removed from Supabase.');
